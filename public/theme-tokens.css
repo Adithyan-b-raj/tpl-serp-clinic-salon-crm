@@ -1,0 +1,17 @@
+/* Extracted via tpl-tools-design-extractor for tpl-serp-clinic-salon-crm */
+:root {
+  --font-primary: 'Plus Jakarta Sans', sans-serif;
+  --font-accent: 'Space Grotesk', sans-serif;
+  --color-primary: #0D9488;
+  --brand-primary: var(--color-primary);
+  --color-dark: #134E4A;
+  --brand-dark: var(--color-dark);
+  --bg-main: #F0FDFA;
+  --bg-canvas: #CCFBF1;
+  --bg-sand: var(--bg-canvas);
+  --border-color: #99F6E4;
+  --grid-gap-desktop: 28px 22px;
+  --grid-gap-mobile: 16px 14px;
+  --radius: 6px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}

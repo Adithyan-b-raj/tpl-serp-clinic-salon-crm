@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS records (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  detail TEXT,
+  amount TEXT,
+  status TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);

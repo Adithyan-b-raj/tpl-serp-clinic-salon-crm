@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASTERIA SKIN & DENTAL — Small ERP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="theme-tokens.css">
+  <script src="whitelabel.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-primary);
+      background-color: var(--bg-main);
+      color: var(--color-dark);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    .top-bar {
+      background: var(--bg-canvas);
+      color: var(--color-dark);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .nav-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 15px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand-logo {
+      font-family: var(--font-accent);
+      font-size: 23px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--color-dark);
+      text-decoration: none;
+    }
+    .brand-logo span {
+      font-family: var(--font-primary);
+      color: var(--color-primary);
+      font-size: 11px;
+      letter-spacing: 2px;
+      display: block;
+      margin-top: -2px;
+    }
+    nav.desktop-nav { display: flex; gap: 22px; align-items: center; }
+    nav.desktop-nav a {
+      color: var(--color-dark);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    nav.desktop-nav a:hover { color: var(--color-primary); }
+    .btn-primary {
+      background: var(--color-primary);
+      color: #FFFFFF;
+      border: none;
+      padding: 11px 20px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--color-dark);
+      border: 1px solid var(--border-color);
+      padding: 11px 20px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .hero-banner {
+      padding: 64px 24px 52px;
+      max-width: 1240px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .hero-pill {
+      display: inline-block;
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-color);
+      color: var(--color-primary);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 18px;
+    }
+    .hero-banner h1 {
+      font-family: var(--font-accent);
+      font-size: clamp(32px, 4.6vw, 56px);
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .hero-banner p {
+      font-size: 16px;
+      color: #64748B;
+      max-width: 680px;
+      margin: 0 auto 26px;
+    }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .section-wrap { max-width: 1240px; margin: 0 auto; padding: 42px 24px; }
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--grid-gap-desktop);
+    }
+    .bento-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .bento-card:hover { transform: translateY(-4px); border-color: var(--color-primary); }
+    .bento-img-wrap { height: 210px; position: relative; background: var(--bg-canvas); overflow: hidden; }
+    .bento-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .bento-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: var(--color-primary);
+      color: #FFF;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .bento-body { padding: 18px; display: flex; flex-direction: column; flex: 1; }
+    .bento-code { font-size: 11px; color: #64748B; font-weight: 600; margin-bottom: 4px; }
+    .bento-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .bento-sub { font-size: 13px; color: #64748B; margin-bottom: 14px; flex: 1; }
+    .bento-footer {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-color);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+    .calc-panel {
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 32px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 28px;
+      align-items: center;
+    }
+    .slider-group { margin-bottom: 18px; }
+    .slider-group label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .slider-group input[type="range"] { width: 100%; accent-color: var(--color-primary); }
+    .calc-result-card {
+      background: #FFFFFF;
+      border: 2px solid var(--color-primary);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+    }
+    .calc-result-val {
+      font-family: var(--font-accent);
+      font-size: 38px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 8px 0 14px;
+    }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 900;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #FFFFFF;
+      color: var(--color-dark);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      max-width: 480px;
+      width: 100%;
+      padding: 24px;
+    }
+    .form-field { margin-bottom: 12px; }
+    .form-field label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; color: #64748B; }
+    .form-field input {
+      width: 100%;
+      padding: 10px;
+      background: var(--bg-main);
+      color: var(--color-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+    }
+    .wa-float-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+      text-decoration: none;
+      color: #FFF;
+      font-size: 22px;
+    }
+    .admin-pill-floating {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      background: var(--color-dark);
+      color: #FFF;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      z-index: 500;
+    }
+    @media (max-width: 860px) {
+      .bento-grid, .calc-panel { grid-template-columns: 1fr; }
+      nav.desktop-nav, .admin-pill-floating { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">LIVE WAITING ROOM TOKEN: #TK-18 IN CABIN 1 // EST. WAIT: 6 MINS</div>
+  <header>
+    <div class="nav-container">
+      <a href="#" class="brand-logo">ASTERIA SKIN & DENTAL</a>
+      <nav class="desktop-nav">
+        <a href="#catalog">Catalog / Modules</a>
+        <a href="#calculator">Interactive Calculator</a>
+        <a href="admin.html">Admin / POS Hub</a>
+      </nav>
+      <button class="btn-primary" onclick="openLeadModal()">Book Appointment & Get Live Token Number</button>
+    </div>
+  </header>
+
+  <section class="hero-banner">
+    <span class="hero-pill">LIVE WAITING ROOM TOKEN: #TK-18 IN CABIN 1 // EST. WAIT: 6 MINS</span>
+    <h1 data-wl-brand>ASTERIA SKIN & DENTAL</h1>
+    <p data-wl-tagline>Book specialist doctor or stylist slots & track your live waiting room token from your phone.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="openLeadModal()">Book Appointment & Get Live Token Number</button>
+      <a href="#calculator" class="btn-outline">Treatment & Package Estimator</a>
+    </div>
+  </section>
+
+  <section class="section-wrap" id="catalog">
+    <div class="section-head">
+      <h2>Specialist Doctors, Aesthetic Cabins & Live Token Queue</h2>
+      <div id="drawerWaText" style="font-size:12px;color:#64748B;">WhatsApp: +91 90619 02295</div>
+    </div>
+    <div class="bento-grid" id="bentoGrid"></div>
+  </section>
+
+  <section class="section-wrap" id="calculator">
+    <div class="calc-panel">
+      <div>
+        <h2 style="font-family:var(--font-accent);font-size:26px;margin-bottom:6px;">Interactive Treatment Session & Package Estimator</h2>
+        <p style="font-size:13px;color:#64748B;margin-bottom:20px;">Select number of treatment sittings and specialist tier (multi-sitting package saves 15%).</p>
+        <div class="slider-group">
+          <label><span>Number of Treatment Sittings</span><strong id="valSliderA" style="color:var(--color-primary);">3</strong></label>
+          <input type="range" id="sliderA" min="1" max="8" value="3" oninput="recalc()">
+        </div>
+        <div class="slider-group">
+          <label><span>Procedure Tier (1=Consult/Clean ₹1200, 2=Laser/Peel ₹3500, 3=Implant/Bridal ₹8500)</span><strong id="valSliderB" style="color:var(--color-primary);">2</strong></label>
+          <input type="range" id="sliderB" min="1" max="3" value="2" oninput="recalc()">
+        </div>
+      </div>
+      <div class="calc-result-card">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#64748B;">Estimated Treatment Plan Total (Incl. Digital Prescription)</div>
+        <div class="calc-result-val" id="calcOutput">₹0</div>
+        <button class="btn-primary" style="width:100%;justify-content:center;" onclick="openLeadModal()">Generate Live Queue Token & Confirm Slot</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal-overlay" id="leadModal">
+    <div class="modal-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <h3 style="font-size:18px;">Generate Live Queue Token & Confirm Slot</h3>
+        <button onclick="closeLeadModal()" style="background:none;border:none;color:inherit;font-size:18px;cursor:pointer;">✕</button>
+      </div>
+      <form onsubmit="submitLead(event)">
+        <div class="form-field"><label>Name / Business / Table *</label><input type="text" id="leadName" required placeholder="e.g. Anand Varma"></div>
+        <div class="form-field"><label>WhatsApp / Mobile Number *</label><input type="tel" id="leadPhone" required placeholder="919876543210"></div>
+        <div class="form-field"><label>Order / Ticket Details</label><input type="text" id="leadDetail" readonly></div>
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Confirm & Sync to Admin / POS</button>
+      </form>
+      <div id="leadSuccessBox" style="display:none;margin-top:14px;padding:12px;background:var(--bg-canvas);border:1px solid var(--color-primary);border-radius:4px;font-size:12px;"></div>
+    </div>
+  </div>
+
+  <a href="admin.html" class="admin-pill-floating">⚙️ Open Admin / POS Command Center</a>
+  <a id="floatingWaBtn" href="https://wa.me/919061902295" target="_blank" class="wa-float-btn">💬</a>
+
+  <script>
+    const ITEMS = [
+  {
+    "code": "CABIN-01",
+    "title": "Dr. Roshan Varghese — Chief Orthodontist & Implantologist",
+    "sub": "3D Digital Smile Design, Invisalign & Painless Root Canal • Next Token: #TK-19",
+    "metric": "₹500 Consultation",
+    "badge": "NOW CALLING #TK-18",
+    "img": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "code": "CABIN-02",
+    "title": "Dr. Meenakshi Menon — Clinical Dermatologist & Laser",
+    "sub": "HydraFacial MD, Q-Switch Pigmentation Laser & PRP Hair Restoration • Next Token: #TK-09",
+    "metric": "₹700 Consultation",
+    "badge": "NOW CALLING #TK-08",
+    "img": "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "code": "CABIN-03",
+    "title": "Senior Aesthetician — Korean Glass Skin & Bridal Ritual",
+    "sub": "90-Min Oxygen Botanical Infusion + LED Phototherapy",
+    "metric": "₹3,499 Session",
+    "badge": "2 SLOTS TODAY",
+    "img": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "code": "PKG-DENTAL",
+    "title": "Ceramic Veneers & Laser Teeth Whitening Suite",
+    "sub": "Single-visit Philips Zoom chairside whitening + digital bite scan",
+    "metric": "₹12,500 Complete",
+    "badge": "DENTAL SUITE",
+    "img": "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "code": "PKG-BRIDAL",
+    "title": "Pre-Bridal 6-Week Dermatology & Hair Glow Plan",
+    "sub": "Includes 4 peel sessions, IV glutathione consult & custom clinical regimen",
+    "metric": "₹18,900 Package",
+    "badge": "BRIDAL CARE",
+    "img": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "code": "PHARMACY",
+    "title": "In-House Derm-Pharmacy & Post-Care Kit Dispatch",
+    "sub": "Scan prescription QR to reorder sunscreen, retinoids & medicated cleansers",
+    "metric": "Same-Day Delivery",
+    "badge": "PHARMACY",
+    "img": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80"
+  }
+];
+    let selectedTitle = ITEMS[0].title;
+    let calcFormatted = '';
+
+    function renderGrid() {
+      document.getElementById('bentoGrid').innerHTML = ITEMS.map((it, i) => `
+        <article class="bento-card" onclick="selectItem(${i})">
+          <div class="bento-img-wrap">
+            <img src="${it.img}" alt="${it.title}" loading="lazy">
+            <span class="bento-badge">${it.badge}</span>
+          </div>
+          <div class="bento-body">
+            <div class="bento-code">${it.code}</div>
+            <div class="bento-title">${it.title}</div>
+            <div class="bento-sub">${it.sub}</div>
+            <div class="bento-footer"><span>${it.metric}</span><span>Select →</span></div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function recalc() {
+      const team = Number(document.getElementById('sliderA').value);
+      const hours = Number(document.getElementById('sliderB').value);
+      document.getElementById('valSliderA').textContent = team;
+      document.getElementById('valSliderB').textContent = hours;
+      const val = Math.round(team * (hours === 1 ? 1200 : hours === 2 ? 3500 : 8500) * (team >= 3 ? 0.85 : 1));
+      calcFormatted = '₹' + Number(val).toLocaleString('en-IN');
+      document.getElementById('calcOutput').textContent = calcFormatted;
+    }
+
+    function selectItem(idx) {
+      selectedTitle = ITEMS[idx].title + ' (' + ITEMS[idx].metric + ')';
+      openLeadModal();
+    }
+
+    function openLeadModal() {
+      document.getElementById('leadDetail').value = selectedTitle + ' • Total: ' + calcFormatted;
+      document.getElementById('leadSuccessBox').style.display = 'none';
+      document.getElementById('leadModal').classList.add('open');
+    }
+
+    function closeLeadModal() {
+      document.getElementById('leadModal').classList.remove('open');
+    }
+
+    function submitLead(e) {
+      e.preventDefault();
+      const entry = {
+        id: 'TX-' + Math.floor(1000 + Math.random() * 9000),
+        name: document.getElementById('leadName').value.trim(),
+        phone: document.getElementById('leadPhone').value.trim(),
+        detail: document.getElementById('leadDetail').value.trim(),
+        amount: calcFormatted,
+        status: 'LIVE // QUEUED'
+      };
+      try {
+        const list = JSON.parse(localStorage.getItem('bmad_leads_tpl-serp-clinic-salon-crm') || '[]');
+        list.unshift(entry);
+        localStorage.setItem('bmad_leads_tpl-serp-clinic-salon-crm', JSON.stringify(list));
+      } catch (err) {}
+      const box = document.getElementById('leadSuccessBox');
+      box.style.display = 'block';
+      box.innerHTML = '✓ Dispatched (' + entry.id + ')! Open <a href="admin.html" style="color:var(--color-primary);font-weight:700;">Admin / POS Hub</a> to process.';
+    }
+
+    renderGrid();
+    recalc();
+  </script>
+</body>
+</html>
