@@ -2,22 +2,1549 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title data-wl-brand>AURA HEALTH // Receptionist Token Console</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-wl-brand>AURA HEALTH // Clinical Reception Console & Rx Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="theme-tokens.css">
   <script src="whitelabel.js"></script>
   <style>
-    body { background: #0F172A; color: #FFF; font-family: monospace; padding: 24px; }
-    .box { background: #1E293B; padding: 20px; border-radius: 8px; margin-top: 20px; }
+    :root {
+      --admin-dark: #0F172A;
+      --admin-surface: #1E293B;
+      --admin-border: #334155;
+      --admin-teal: #0D9488;
+      --admin-teal-bright: #2DD4BF;
+    }
+
+    body {
+      background: #0B1120;
+      color: #F8FAFC;
+      font-family: var(--font-primary, 'Plus Jakarta Sans', sans-serif);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Command Header */
+    .admin-header {
+      background: #0F172A;
+      border-bottom: 1px solid #1E293B;
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .admin-logo {
+      font-family: var(--font-accent);
+      font-size: 24px;
+      color: #FFFFFF;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+    .admin-logo span {
+      color: var(--admin-teal-bright);
+      font-style: italic;
+    }
+    .badge-opd-hub {
+      background: rgba(45, 212, 191, 0.15);
+      border: 1px solid rgba(45, 212, 191, 0.3);
+      color: var(--admin-teal-bright);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    /* KPI Telemetry Ribbon */
+    .kpi-ribbon {
+      background: #111C33;
+      border-bottom: 1px solid #1E293B;
+      padding: 8px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+    .kpi-stats {
+      display: flex;
+      gap: 24px;
+    }
+    .kpi-stat-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .kpi-stat-val {
+      font-weight: 700;
+      color: var(--admin-teal-bright);
+    }
+
+    /* Navigation Tabs */
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      background: #131F37;
+      padding: 10px 28px;
+      border-bottom: 1px solid #1E293B;
+    }
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #94A3B8;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-family: var(--font-primary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+    .tab-btn:hover {
+      color: #FFFFFF;
+      background: #1E293B;
+    }
+    .tab-btn.active {
+      background: #0D9488;
+      color: #FFFFFF;
+      border-color: #0D9488;
+    }
+
+    .main-workspace {
+      flex: 1;
+      padding: 24px 28px 60px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    /* ========================================================
+       TAB 1: RECEPTIONIST CALLING CONSOLE
+       ======================================================== */
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    .calling-layout {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 980px) {
+      .calling-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Active Serving Console Card */
+    .hero-console-card {
+      background: #131F37;
+      border: 2px solid #0D9488;
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .console-cabin-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .cabin-tab-btn {
+      flex: 1;
+      background: #1E293B;
+      border: 1px solid #334155;
+      color: #CBD5E1;
+      padding: 10px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+    .cabin-tab-btn.active {
+      background: #0D9488;
+      border-color: #0D9488;
+      color: #FFFFFF;
+    }
+
+    .serving-token-box {
+      background: #0B1120;
+      border: 1px solid #1E293B;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 22px;
+    }
+    .serving-token-num {
+      font-family: var(--font-mono);
+      font-size: 78px;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--admin-teal-bright);
+      letter-spacing: -2px;
+      text-shadow: 0 0 25px rgba(45, 212, 191, 0.4);
+      margin: 8px 0;
+    }
+    .serving-patient-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+    .serving-service-tag {
+      font-size: 13px;
+      color: #94A3B8;
+      margin-top: 4px;
+    }
+    .timer-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34D399;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 12px;
+    }
+
+    /* 4 Primary Calling Actions */
+    .calling-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .btn-action-primary {
+      background: #0D9488;
+      color: #FFFFFF;
+      border: none;
+      padding: 16px;
+      border-radius: 10px;
+      font-family: var(--font-primary);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 15px rgba(13, 148, 136, 0.3);
+      transition: all 0.15s ease;
+      grid-column: span 2;
+    }
+    .btn-action-primary:hover {
+      background: #0F766E;
+      transform: translateY(-1px);
+    }
+    .btn-action-secondary {
+      background: #1E293B;
+      color: #F8FAFC;
+      border: 1px solid #334155;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+    .btn-action-secondary:hover {
+      background: #334155;
+    }
+    .btn-action-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: #EF4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-action-danger:hover {
+      background: #EF4444;
+      color: #FFFFFF;
+    }
+
+    /* Queue Table Card */
+    .queue-panel-card {
+      background: #131F37;
+      border: 1px solid #1E293B;
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .panel-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .panel-title {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--admin-teal-bright);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    .admin-table th {
+      text-align: left;
+      padding: 8px 10px;
+      color: #64748B;
+      font-size: 10px;
+      border-bottom: 1px solid #1E293B;
+      letter-spacing: 0.5px;
+    }
+    .admin-table td {
+      padding: 10px;
+      border-bottom: 1px solid #1E293B;
+      color: #E2E8F0;
+    }
+    .table-token-badge {
+      font-weight: 800;
+      color: var(--admin-teal-bright);
+      background: rgba(45, 212, 191, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .btn-row-action {
+      background: #1E293B;
+      border: 1px solid #334155;
+      color: #CBD5E1;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 10px;
+      font-family: var(--font-mono);
+    }
+    .btn-row-action:hover {
+      background: #0D9488;
+      color: #FFFFFF;
+      border-color: #0D9488;
+    }
+
+    /* Quick Walk-In Form */
+    .walkin-box {
+      margin-top: 20px;
+      background: #0B1120;
+      border: 1px dashed #334155;
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .walkin-input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    @media (max-width: 600px) {
+      .walkin-input-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    .admin-input {
+      background: #1E293B;
+      border: 1px solid #334155;
+      color: #FFFFFF;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: var(--font-primary);
+    }
+    .admin-input:focus {
+      outline: none;
+      border-color: #0D9488;
+    }
+
+    /* ========================================================
+       TAB 2: DOCTOR DIGITAL PRESCRIPTION (RX) BUILDER
+       ======================================================== */
+    .rx-grid-container {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 1024px) {
+      .rx-grid-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .rx-builder-panel {
+      background: #131F37;
+      border: 1px solid #1E293B;
+      border-radius: 14px;
+      padding: 28px;
+    }
+    .rx-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #1E293B;
+      padding-bottom: 14px;
+    }
+
+    /* Patient Vitals Bar */
+    .vitals-bar-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      background: #0B1120;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #1E293B;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 600px) {
+      .vitals-bar-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .vitals-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .vitals-label {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: #94A3B8;
+      font-weight: 700;
+    }
+    .vitals-input {
+      background: #1E293B;
+      border: 1px solid #334155;
+      color: #FFFFFF;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+    }
+
+    /* Dynamic Medication Rows */
+    .med-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+    }
+    .med-table th {
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: #64748B;
+      padding: 6px 8px;
+      border-bottom: 1px solid #1E293B;
+    }
+    .med-table td {
+      padding: 6px 4px;
+      vertical-align: middle;
+    }
+    .btn-del-row {
+      background: transparent;
+      border: none;
+      color: #EF4444;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 4px 8px;
+    }
+    .btn-add-med {
+      background: #1E293B;
+      border: 1px dashed #0D9488;
+      color: var(--admin-teal-bright);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    .btn-add-med:hover {
+      background: rgba(13, 148, 136, 0.15);
+    }
+
+    /* Letterhead Live Preview Side */
+    .rx-preview-sheet {
+      background: #FFFFFF;
+      color: #0F172A;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      font-family: var(--font-primary);
+      position: sticky;
+      top: 100px;
+    }
+    .rx-sheet-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid #0D9488;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .rx-symbol {
+      font-family: serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: #0D9488;
+      line-height: 1;
+    }
+    .rx-med-preview-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 6px 0;
+      border-bottom: 1px dashed #E2E8F0;
+    }
+
+    /* WhatsApp Dispatch Button */
+    .btn-wa-dispatch {
+      width: 100%;
+      background: #25D366;
+      color: #FFFFFF;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+      box-shadow: 0 6px 15px rgba(37,211,102,0.3);
+    }
+    .btn-wa-dispatch:hover {
+      background: #1EBE5D;
+    }
+
+    /* ========================================================
+       TAB 3: DAILY CHAIR / ROOM ROSTER
+       ======================================================== */
+    .roster-grid-card {
+      background: #131F37;
+      border: 1px solid #1E293B;
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .roster-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      margin-top: 16px;
+    }
+    .roster-table th {
+      background: #0B1120;
+      padding: 12px;
+      text-align: left;
+      color: #94A3B8;
+      border: 1px solid #1E293B;
+    }
+    .roster-table td {
+      padding: 12px;
+      border: 1px solid #1E293B;
+      color: #E2E8F0;
+    }
+    .roster-slot-completed {
+      background: rgba(16, 185, 129, 0.15);
+      border-left: 4px solid #10B981;
+      padding: 6px 8px;
+      border-radius: 4px;
+      color: #34D399;
+      font-size: 11px;
+    }
+    .roster-slot-active {
+      background: rgba(245, 158, 11, 0.15);
+      border-left: 4px solid #F59E0B;
+      padding: 6px 8px;
+      border-radius: 4px;
+      color: #FBBF24;
+      font-size: 11px;
+    }
+    .roster-slot-scheduled {
+      background: rgba(14, 165, 233, 0.15);
+      border-left: 4px solid #0EA5E9;
+      padding: 6px 8px;
+      border-radius: 4px;
+      color: #38BDF8;
+      font-size: 11px;
+    }
+    .roster-slot-break {
+      background: #0B1120;
+      color: #64748B;
+      font-size: 11px;
+      padding: 6px 8px;
+      text-align: center;
+    }
+
+    /* Print Preview Styles */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .rx-preview-sheet, .rx-preview-sheet * {
+        visibility: visible;
+      }
+      .rx-preview-sheet {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none;
+      }
+    }
   </style>
 </head>
 <body data-layout-archetype="clinical-scheduler-admin">
-  <h2><span data-wl-brand>AURA HEALTH</span> — Receptionist Queue Calling Console</h2>
-  <div class="box">
-    <div>CURRENT SERVING: <strong>#TK-18 (Cabin 01)</strong></div>
-    <div style="margin-top:16px; display:flex; gap:12px;">
-      <button style="background:#0D9488; color:#FFF; border:none; padding:10px 18px; cursor:pointer;" onclick="alert('Calling next patient: #TK-19')">CALL NEXT PATIENT 🔔</button>
-      <button style="background:#EF4444; color:#FFF; border:none; padding:10px 18px; cursor:pointer;">MARK NO-SHOW</button>
+
+  <!-- Command Top Bar -->
+  <header class="admin-header">
+    <div class="brand-group">
+      <a href="admin.html" class="admin-logo">
+        <span data-wl-brand>AURA HEALTH</span>
+      </a>
+      <span class="badge-opd-hub">OPD CLINICAL OPERATING SYSTEM</span>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:16px;">
+      <a href="index.html?view=tv" target="_blank" style="color:var(--admin-teal-bright); font-size:12px; font-family:var(--font-mono); text-decoration:none; display:flex; align-items:center; gap:6px;">
+        <span>📺 Launch Public TV Board ↗</span>
+      </a>
+      <a href="index.html" style="background:#1E293B; color:#CBD5E1; text-decoration:none; font-size:12px; font-weight:600; padding:6px 14px; border-radius:6px; border:1px solid #334155;">
+        📅 Patient Portal
+      </a>
+    </div>
+  </header>
+
+  <!-- Telemetry KPI Ribbon -->
+  <div class="kpi-ribbon">
+    <div class="kpi-stats">
+      <div class="kpi-stat-item">
+        <span>TODAY TOKENS:</span>
+        <span class="kpi-stat-val" id="kpiTodayCount">48</span>
+      </div>
+      <div class="kpi-stat-item">
+        <span>ACTIVE IN CABINS:</span>
+        <span class="kpi-stat-val" id="kpiServingCount">3</span>
+      </div>
+      <div class="kpi-stat-item">
+        <span>WAITING IN QUEUE:</span>
+        <span class="kpi-stat-val" id="kpiWaitCount">4</span>
+      </div>
+      <div class="kpi-stat-item">
+        <span>AVG CONSULT TIME:</span>
+        <span class="kpi-stat-val">14 MIN</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span class="pulse-badge"><span class="pulse-dot"></span> <span style="color:#34D399; font-weight:700;">CF EDGE ENGINE SYNCED</span></span>
+      <span id="adminTimeDisplay" style="color:#94A3B8;">10:45:32 AM</span>
     </div>
   </div>
+
+  <!-- Navigation Tabs -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" onclick="switchAdminTab('calling', this)">
+      <span>🔔 1. Receptionist Calling Console</span>
+    </button>
+    <button class="tab-btn" onclick="switchAdminTab('rx', this)">
+      <span>📝 2. Doctor Digital Rx Builder</span>
+    </button>
+    <button class="tab-btn" onclick="switchAdminTab('roster', this)">
+      <span>📅 3. Daily Chair & Room Roster</span>
+    </button>
+  </nav>
+
+  <!-- Main Admin Workspace -->
+  <main class="main-workspace">
+
+    <!-- ========================================================
+         TAB 1: RECEPTIONIST CALLING CONSOLE
+         ======================================================== -->
+    <div id="tabCalling" class="tab-content active">
+      <div class="calling-layout">
+        
+        <!-- Left: Active Serving Hero Console -->
+        <div class="hero-console-card">
+          <div class="console-cabin-selector">
+            <button class="cabin-tab-btn active" onclick="selectConsoleCabin('doc_01', 'Cabin 01 (Room 101)', 'Dr. Sarah Smith, MD', 'Dermatology & Skin Clinic', 'A', this)">
+              CABIN 01 • DERMATOLOGY
+            </button>
+            <button class="cabin-tab-btn" onclick="selectConsoleCabin('doc_02', 'Cabin 02 (Room 104)', 'Dr. Arvind Menon, BDS', 'Dental & Orthodontics', 'B', this)">
+              CABIN 02 • DENTAL
+            </button>
+            <button class="cabin-tab-btn" onclick="selectConsoleCabin('doc_03', 'Cabin 03 (Room 108)', 'Dr. Shalini Ray, MBBS', 'General & Pediatrics', 'C', this)">
+              CABIN 03 • PEDIATRIC
+            </button>
+          </div>
+
+          <div class="serving-token-box">
+            <div style="display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:11px; color:#94A3B8;">
+              <span id="activeCabinRoomLabel">CABIN 01 • ROOM 101</span>
+              <span style="color:#2DD4BF;">● CALLING CONSOLE</span>
+            </div>
+
+            <div class="serving-token-num" id="activeTokenNum">A-14</div>
+            <div class="serving-patient-name" id="activePatientName">Vikramaditya Roy</div>
+            <div class="serving-service-tag" id="activeServiceTag">Cryotherapy for Viral Wart Removal • Dr. Sarah Smith, MD</div>
+
+            <div>
+              <span class="timer-indicator">
+                <span>⏱️ In Consultation:</span>
+                <span id="consultTimer">11m 45s</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- 4 Core Calling Actions -->
+          <div class="calling-actions-grid">
+            <button class="btn-action-primary" onclick="triggerCallNext()">
+              <span>🔔 CALL NEXT PATIENT</span>
+              <span style="font-size:12px; font-weight:normal; opacity:0.8;">(Advances Queue & Chimes Audio)</span>
+            </button>
+
+            <button class="btn-action-secondary" onclick="triggerRecall()">
+              <span>🔁 RECALL / RE-ANNOUNCE</span>
+            </button>
+
+            <button class="btn-action-secondary" onclick="triggerCompleteAndRx()">
+              <span>✅ COMPLETE & WRITE RX</span>
+            </button>
+
+            <button class="btn-action-danger" onclick="triggerSkip()">
+              <span>⏭️ SKIP / NO-SHOW</span>
+            </button>
+
+            <button class="btn-action-secondary" onclick="testPaChimeOnly()">
+              <span>🔊 TEST WAITING CHIME</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Waiting Queue Table & Walk-In Creator -->
+        <div>
+          <div class="queue-panel-card">
+            <div class="panel-header-row">
+              <span class="panel-title">LIVE WAITING QUEUE</span>
+              <span style="font-family:var(--font-mono); font-size:11px; color:#94A3B8;" id="queueCountBadge">4 Patients Waiting</span>
+            </div>
+
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>TOKEN</th>
+                  <th>PATIENT</th>
+                  <th>DEPT / DOCTOR</th>
+                  <th>TIME</th>
+                  <th>ACTION</th>
+                </tr>
+              </thead>
+              <tbody id="adminQueueRows">
+                <tr>
+                  <td><span class="table-token-badge">#A-15</span></td>
+                  <td><strong>Meera Venkatesh</strong><br><span style="font-size:10px; color:#94A3B8;">+91 97402 77889</span></td>
+                  <td>Dermatology<br><span style="font-size:10px; color:#94A3B8;">Room 101</span></td>
+                  <td>11:00 AM</td>
+                  <td><button class="btn-row-action" onclick="callDirectToken('A-15', 'Meera Venkatesh', 'doc_01')">Call Now</button></td>
+                </tr>
+                <tr>
+                  <td><span class="table-token-badge">#B-05</span></td>
+                  <td><strong>Kavita Sundaram</strong><br><span style="font-size:10px; color:#94A3B8;">+91 98455 66778</span></td>
+                  <td>Dental<br><span style="font-size:10px; color:#94A3B8;">Room 104</span></td>
+                  <td>11:00 AM</td>
+                  <td><button class="btn-row-action" onclick="callDirectToken('B-05', 'Kavita Sundaram', 'doc_02')">Call Now</button></td>
+                </tr>
+                <tr>
+                  <td><span class="table-token-badge">#A-16</span></td>
+                  <td><strong>Divya Nambiar</strong><br><span style="font-size:10px; color:#94A3B8;">+91 98950 12345</span></td>
+                  <td>Dermatology<br><span style="font-size:10px; color:#94A3B8;">Room 101</span></td>
+                  <td>11:30 AM</td>
+                  <td><button class="btn-row-action" onclick="callDirectToken('A-16', 'Divya Nambiar', 'doc_01')">Call Now</button></td>
+                </tr>
+                <tr>
+                  <td><span class="table-token-badge">#C-09</span></td>
+                  <td><strong>Rohan Desai</strong><br><span style="font-size:10px; color:#94A3B8;">+91 99123 45678</span></td>
+                  <td>Pediatric<br><span style="font-size:10px; color:#94A3B8;">Room 108</span></td>
+                  <td>11:15 AM</td>
+                  <td><button class="btn-row-action" onclick="callDirectToken('C-09', 'Rohan Desai', 'doc_03')">Call Now</button></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Quick Walk-In Registration Bar -->
+            <div class="walkin-box">
+              <div style="font-size:11px; font-family:var(--font-mono); font-weight:700; color:var(--admin-teal-bright);">
+                + INSTANT WALK-IN TOKEN GENERATOR (RECEPTION DESK)
+              </div>
+              <div class="walkin-input-row">
+                <input type="text" id="walkinName" class="admin-input" placeholder="Patient Name">
+                <input type="tel" id="walkinPhone" class="admin-input" placeholder="Mobile Number">
+                <select id="walkinDoctor" class="admin-input">
+                  <option value="doc_01">Dr. Sarah (Cabin 01)</option>
+                  <option value="doc_02">Dr. Arvind (Cabin 02)</option>
+                  <option value="doc_03">Dr. Shalini (Cabin 03)</option>
+                </select>
+                <button class="btn-row-action" style="background:#0D9488; color:#FFF; padding:8px 12px; font-weight:700;" onclick="submitWalkIn()">
+                  Issue Token
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================================
+         TAB 2: DOCTOR DIGITAL PRESCRIPTION (RX) BUILDER
+         ======================================================== -->
+    <div id="tabRx" class="tab-content">
+      <div class="rx-grid-container">
+        
+        <!-- Left: Clinical Input Form -->
+        <div class="rx-builder-panel">
+          <div class="rx-header-row">
+            <div>
+              <h2 style="font-size:18px; font-weight:700; color:#FFFFFF;">Doctor Digital Rx & Treatment Pad</h2>
+              <div style="font-size:11px; color:#94A3B8; font-family:var(--font-mono); margin-top:2px;">
+                E-Prescription generator with structured medicines & 1-click WhatsApp dispatch
+              </div>
+            </div>
+            <button class="btn-row-action" style="padding:6px 12px;" onclick="loadActiveConsultationData()">
+              ⚡ Load Active Patient
+            </button>
+          </div>
+
+          <!-- Patient Identity -->
+          <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap:10px; margin-bottom:16px;">
+            <div>
+              <label class="vitals-label">Patient Name *</label>
+              <input type="text" id="rxPatientName" class="admin-input" style="width:100%;" value="Vikramaditya Roy">
+            </div>
+            <div>
+              <label class="vitals-label">Age</label>
+              <input type="number" id="rxPatientAge" class="admin-input" style="width:100%;" value="35">
+            </div>
+            <div>
+              <label class="vitals-label">Gender</label>
+              <select id="rxPatientGender" class="admin-input" style="width:100%;">
+                <option value="Male" selected>Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="vitals-label">WhatsApp Mobile *</label>
+              <input type="tel" id="rxPatientPhone" class="admin-input" style="width:100%;" value="+91 99801 44556">
+            </div>
+          </div>
+
+          <!-- Patient Vitals Bar -->
+          <div class="vitals-bar-grid">
+            <div class="vitals-item">
+              <span class="vitals-label">BP (mmHg)</span>
+              <input type="text" id="rxBp" class="vitals-input" value="122/80">
+            </div>
+            <div class="vitals-item">
+              <span class="vitals-label">Pulse (bpm)</span>
+              <input type="text" id="rxPulse" class="vitals-input" value="74">
+            </div>
+            <div class="vitals-item">
+              <span class="vitals-label">Weight (kg)</span>
+              <input type="text" id="rxWeight" class="vitals-input" value="72">
+            </div>
+            <div class="vitals-item">
+              <span class="vitals-label">Temp (°F)</span>
+              <input type="text" id="rxTemp" class="vitals-input" value="98.4">
+            </div>
+            <div class="vitals-item">
+              <span class="vitals-label">SpO2 (%)</span>
+              <input type="text" id="rxSpo2" class="vitals-input" value="99%">
+            </div>
+          </div>
+
+          <!-- Diagnosis -->
+          <div style="margin-bottom:18px;">
+            <label class="vitals-label">Clinical Diagnosis & Findings *</label>
+            <input type="text" id="rxDiagnosis" class="admin-input" style="width:100%; margin-top:4px;" value="Verruca Vulgaris (Right Forearm) Post-Cryotherapy Care" placeholder="e.g. Acne Vulgaris Grade II, Acute Gingivitis, etc.">
+          </div>
+
+          <!-- Dynamic Medication Rows -->
+          <div style="margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+            <label class="vitals-label">Prescribed Medications & Posology</label>
+            <span style="font-size:10px; color:#94A3B8; font-family:var(--font-mono);">Format: Drug | Dose | Frequency | Duration | Timing</span>
+          </div>
+
+          <table class="med-table" id="medTable">
+            <thead>
+              <tr>
+                <th style="width:34%;">DRUG NAME</th>
+                <th style="width:18%;">DOSAGE</th>
+                <th style="width:16%;">FREQ</th>
+                <th style="width:14%;">DAYS</th>
+                <th style="width:18%;">INSTRUCTIONS</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="medTableBody">
+              <tr>
+                <td><input type="text" class="admin-input med-name" style="width:100%;" value="Mupirocin Ointment 2%"></td>
+                <td><input type="text" class="admin-input med-dose" style="width:100%;" value="Thin Film"></td>
+                <td><input type="text" class="admin-input med-freq" style="width:100%;" value="1-0-1"></td>
+                <td><input type="text" class="admin-input med-days" style="width:100%;" value="7 Days"></td>
+                <td><input type="text" class="admin-input med-inst" style="width:100%;" value="Apply after clean wash"></td>
+                <td><button type="button" class="btn-del-row" onclick="deleteMedRow(this)">×</button></td>
+              </tr>
+              <tr>
+                <td><input type="text" class="admin-input med-name" style="width:100%;" value="Levocetirizine 5mg"></td>
+                <td><input type="text" class="admin-input med-dose" style="width:100%;" value="1 Tab"></td>
+                <td><input type="text" class="admin-input med-freq" style="width:100%;" value="0-0-1"></td>
+                <td><input type="text" class="admin-input med-days" style="width:100%;" value="5 Days"></td>
+                <td><input type="text" class="admin-input med-inst" style="width:100%;" value="Bedtime if itching"></td>
+                <td><button type="button" class="btn-del-row" onclick="deleteMedRow(this)">×</button></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <button type="button" class="btn-add-med" onclick="addMedRow()">
+            <span>+ Add Medicine Row</span>
+          </button>
+
+          <!-- Doctor Advice & Follow-Up -->
+          <div style="display:grid; grid-template-columns: 2fr 1fr; gap:12px; margin-bottom:18px;">
+            <div>
+              <label class="vitals-label">Doctor Advice & Lifestyle Guidance</label>
+              <textarea id="rxAdvice" class="admin-input" rows="2" style="width:100%; resize:vertical;">Keep treated area dry for 24 hours. Do not pick or scratch blister. Apply sterile dressing if oozing.</textarea>
+            </div>
+            <div>
+              <label class="vitals-label">Next Review / Follow-Up</label>
+              <input type="text" id="rxFollowUp" class="admin-input" style="width:100%;" value="14 Days (15 Nov 2026)">
+            </div>
+          </div>
+
+          <!-- Bottom Actions -->
+          <div style="display:flex; gap:12px;">
+            <button class="btn-action-primary" style="grid-column:auto; flex:1;" onclick="saveAndPreviewRx()">
+              <span>💾 SAVE PRESCRIPTION TO API</span>
+            </button>
+            <button class="btn-action-secondary" onclick="window.print()">
+              <span>🖨️ Print Rx Sheet</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Official Letterhead Live Preview & WhatsApp Dispatch -->
+        <div>
+          <div class="rx-preview-sheet" id="rxPrintSheet">
+            <div class="rx-sheet-header">
+              <div>
+                <div style="font-family:var(--font-accent); font-size:22px; font-weight:700; color:#0F172A;" data-wl-brand>
+                  AURA HEALTH CLINICS
+                </div>
+                <div style="font-size:11px; color:#64748B; font-family:var(--font-mono);">
+                  NABH ACCREDITED DAYCARE • LICENSE: #KL-MED-8841
+                </div>
+                <div style="font-size:11px; color:#64748B;" id="letterheadDoc">
+                  Dr. Sarah Smith, MD (Chief Dermatologist) • Room 101
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <div class="rx-symbol">℞</div>
+                <div style="font-size:10px; font-family:var(--font-mono); color:#64748B;" id="letterheadDate">
+                  DATE: 01-NOV-2026
+                </div>
+              </div>
+            </div>
+
+            <!-- Patient Info Bar -->
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:6px; padding:10px; margin-bottom:14px; font-size:12px; display:flex; justify-content:space-between;">
+              <div>
+                <strong>Patient:</strong> <span id="previewPatName">Vikramaditya Roy</span> (<span id="previewPatAge">35</span>y / <span id="previewPatGen">Male</span>)<br>
+                <strong>Phone:</strong> <span id="previewPatPhone">+91 99801 44556</span>
+              </div>
+              <div style="text-align:right; font-family:var(--font-mono); font-size:11px; color:#475569;">
+                <div>BP: <span id="previewBp">122/80</span> | Pulse: <span id="previewPulse">74</span></div>
+                <div>Wt: <span id="previewWeight">72kg</span> | SpO2: <span id="previewSpo2">99%</span></div>
+              </div>
+            </div>
+
+            <!-- Diagnosis -->
+            <div style="margin-bottom:14px; font-size:12px;">
+              <strong>DIAGNOSIS:</strong> <span id="previewDiag" style="color:#0D9488; font-weight:700;">Verruca Vulgaris Post-Cryotherapy Care</span>
+            </div>
+
+            <!-- Prescribed Drugs -->
+            <div style="font-size:11px; font-weight:700; color:#64748B; border-bottom:1px solid #CBD5E1; padding-bottom:4px; margin-bottom:6px;">
+              RX MEDICATIONS:
+            </div>
+            <div id="previewMedList">
+              <div class="rx-med-preview-row">
+                <span>1. Mupirocin Ointment 2% (Thin Film)</span>
+                <span><strong>1-0-1</strong> • 7 Days (After wash)</span>
+              </div>
+              <div class="rx-med-preview-row">
+                <span>2. Levocetirizine 5mg (1 Tab)</span>
+                <span><strong>0-0-1</strong> • 5 Days (At bedtime)</span>
+              </div>
+            </div>
+
+            <!-- Advice & Sign -->
+            <div style="margin-top:16px; font-size:11px; color:#475569;">
+              <strong>Advice:</strong> <span id="previewAdvice">Keep treated area dry for 24 hours. Do not pick blister.</span><br>
+              <strong>Review:</strong> <span id="previewFollowUp">14 Days (15 Nov 2026)</span>
+            </div>
+
+            <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:flex-end;">
+              <div style="font-size:9px; font-family:var(--font-mono); color:#94A3B8;">
+                SYSTEM GENERATED DIGITAL RX • DISPATCHED VIA EDGE API
+              </div>
+              <div style="text-align:center;">
+                <div style="font-family:'Instrument Serif'; font-style:italic; font-size:20px; color:#0D9488;">Dr. Sarah Smith</div>
+                <div style="border-top:1px solid #CBD5E1; font-size:10px; font-family:var(--font-mono); color:#64748B; padding-top:2px;">
+                  SIGNATURE & REG SEAL
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 1-Click WhatsApp PDF Rx Dispatch -->
+          <button class="btn-wa-dispatch" id="btnDispatchWa" onclick="dispatchRxWhatsApp()">
+            <span>💬 1-CLICK DISPATCH RX VIA WHATSAPP</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================================
+         TAB 3: DAILY CHAIR & ROOM ROSTER
+         ======================================================== -->
+    <div id="tabRoster" class="tab-content">
+      <div class="roster-grid-card">
+        <div class="panel-header-row">
+          <div>
+            <span class="panel-title">DAILY CHAIR & CLINICAL CABIN ROSTER</span>
+            <div style="font-size:12px; color:#94A3B8; margin-top:2px;">
+              Real-time room occupancy, chair sanitization turnaround, and day schedule breakdown
+            </div>
+          </div>
+          <span class="pulse-badge"><span class="pulse-dot"></span> <span style="font-size:11px; color:#34D399; font-weight:700;">DAY SHIFT ACTIVE</span></span>
+        </div>
+
+        <table class="roster-table">
+          <thead>
+            <tr>
+              <th style="width:14%;">TIME SLOT</th>
+              <th style="width:28%;">CHAIR 01: DERMATOLOGY & LASER<br><span style="font-size:10px; font-weight:normal; color:#64748B;">Dr. Sarah Smith • Room 101</span></th>
+              <th style="width:28%;">CHAIR 02: DENTAL OPERATORY<br><span style="font-size:10px; font-weight:normal; color:#64748B;">Dr. Arvind Menon • Room 104</span></th>
+              <th style="width:28%;">CHAIR 03: PEDIATRIC / GENERAL<br><span style="font-size:10px; font-weight:normal; color:#64748B;">Dr. Shalini Ray • Room 108</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>09:30 AM</strong></td>
+              <td><div class="roster-slot-completed">✔ #A-12 Ananya Sharma (Carbon Peel)</div></td>
+              <td><div class="roster-slot-completed">✔ #B-03 Girish Prabhu (Checkup)</div></td>
+              <td><div class="roster-slot-completed">✔ #C-06 Baby Siya (Vaccine)</div></td>
+            </tr>
+            <tr>
+              <td><strong>10:15 AM</strong></td>
+              <td><div class="roster-slot-active">⚡ #A-14 Vikramaditya Roy (Cryo Wart)</div></td>
+              <td><div class="roster-slot-active">⚡ #B-04 Rahul Krishnan (RCT Stage 2)</div></td>
+              <td><div class="roster-slot-active">⚡ #C-08 Aarav Patel (Asthma Review)</div></td>
+            </tr>
+            <tr>
+              <td><strong>11:00 AM</strong></td>
+              <td><div class="roster-slot-scheduled">⏳ #A-15 Meera Venkatesh (Melasma)</div></td>
+              <td><div class="roster-slot-scheduled">⏳ #B-05 Kavita Sundaram (Scaling)</div></td>
+              <td><div class="roster-slot-scheduled">⏳ #C-09 Rohan Desai (Growth Check)</div></td>
+            </tr>
+            <tr>
+              <td><strong>11:45 AM</strong></td>
+              <td><div class="roster-slot-scheduled">⏳ #A-16 Divya Nambiar (Glow Peel)</div></td>
+              <td><div class="roster-slot-scheduled">⏳ #B-06 Walk-in Slot (Open)</div></td>
+              <td><div class="roster-slot-scheduled">⏳ #C-10 General Followup (Open)</div></td>
+            </tr>
+            <tr>
+              <td><strong>01:00 PM</strong></td>
+              <td colspan="3"><div class="roster-slot-break">☕ CLINICAL SANITIZATION & DOCTOR LUNCH BREAK (13:00 – 14:00)</div></td>
+            </tr>
+            <tr>
+              <td><strong>02:30 PM</strong></td>
+              <td><div class="roster-slot-scheduled">📅 Slot Booked (HydraFacial MD)</div></td>
+              <td><div class="roster-slot-scheduled">📅 Slot Booked (Teeth Whitening)</div></td>
+              <td><div class="roster-slot-scheduled">📅 Slot Booked (Child OPD)</div></td>
+            </tr>
+            <tr>
+              <td><strong>03:30 PM</strong></td>
+              <td><div class="roster-slot-scheduled">📅 Afternoon Consultation Slot</div></td>
+              <td><div class="roster-slot-scheduled">📅 Implant Consultation Slot</div></td>
+              <td><div class="roster-slot-scheduled">📅 Afternoon OPD Slot</div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Console State
+    const adminState = {
+      activeDocId: 'doc_01',
+      activeRoom: 'Cabin 01 (Room 101)',
+      activeDocName: 'Dr. Sarah Smith, MD',
+      activeDept: 'Dermatology & Skin Clinic',
+      activeTokenPrefix: 'A',
+      activeToken: 'A-14',
+      activePatient: 'Vikramaditya Roy',
+      activePhone: '+91 99801 44556',
+      activeService: 'Cryotherapy for Viral Wart Removal',
+      consultSeconds: 705, // 11m 45s
+      queue: [
+        { token: 'A-15', patient: 'Meera Venkatesh', phone: '+91 97402 77889', dept: 'Dermatology', room: 'Room 101', time: '11:00 AM', docId: 'doc_01' },
+        { token: 'B-05', patient: 'Kavita Sundaram', phone: '+91 98455 66778', dept: 'Dental', room: 'Room 104', time: '11:00 AM', docId: 'doc_02' },
+        { token: 'A-16', patient: 'Divya Nambiar', phone: '+91 98950 12345', dept: 'Dermatology', room: 'Room 101', time: '11:30 AM', docId: 'doc_01' },
+        { token: 'C-09', patient: 'Rohan Desai', phone: '+91 99123 45678', dept: 'Pediatric', room: 'Room 108', time: '11:15 AM', docId: 'doc_03' }
+      ]
+    };
+
+    // Tab Switcher
+    function switchAdminTab(tabName, btnEl) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+      btnEl.classList.add('active');
+      if (tabName === 'calling') {
+        document.getElementById('tabCalling').classList.add('active');
+      } else if (tabName === 'rx') {
+        document.getElementById('tabRx').classList.add('active');
+      } else if (tabName === 'roster') {
+        document.getElementById('tabRoster').classList.add('active');
+      }
+    }
+
+    // Cabin Selector
+    function selectConsoleCabin(docId, room, docName, dept, prefix, btnEl) {
+      document.querySelectorAll('.cabin-tab-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+
+      adminState.activeDocId = docId;
+      adminState.activeRoom = room;
+      adminState.activeDocName = docName;
+      adminState.activeDept = dept;
+      adminState.activeTokenPrefix = prefix;
+
+      document.getElementById('activeCabinRoomLabel').textContent = room.toUpperCase();
+
+      if (docId === 'doc_01') {
+        updateActiveDisplay('A-14', 'Vikramaditya Roy', '+91 99801 44556', 'Cryotherapy for Viral Wart Removal • ' + docName);
+      } else if (docId === 'doc_02') {
+        updateActiveDisplay('B-04', 'Rahul Krishnan', '+91 98860 33445', 'Root Canal Treatment (Stage 2) • ' + docName);
+      } else {
+        updateActiveDisplay('C-08', 'Master Aarav Patel', '+91 99001 22334', 'Seasonal Asthma & Nebulization • ' + docName);
+      }
+    }
+
+    function updateActiveDisplay(token, patient, phone, service) {
+      adminState.activeToken = token;
+      adminState.activePatient = patient;
+      adminState.activePhone = phone;
+      adminState.activeService = service;
+
+      document.getElementById('activeTokenNum').textContent = token;
+      document.getElementById('activePatientName').textContent = patient;
+      document.getElementById('activeServiceTag').textContent = service;
+      adminState.consultSeconds = 0;
+    }
+
+    // Live Consult Timer
+    setInterval(() => {
+      adminState.consultSeconds++;
+      const mins = Math.floor(adminState.consultSeconds / 60);
+      const secs = adminState.consultSeconds % 60;
+      const str = `${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
+      const el = document.getElementById('consultTimer');
+      if (el) el.textContent = str;
+    }, 1000);
+
+    // Live Clock
+    function updateAdminClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const el = document.getElementById('adminTimeDisplay');
+      if (el) el.textContent = timeStr;
+    }
+    setInterval(updateAdminClock, 1000);
+    updateAdminClock();
+
+    // ========================================================
+    // CALLING ACTIONS (Web Audio + Speech Synthesis + API)
+    // ========================================================
+    let audioCtx = null;
+    function playChime(text) {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        if (!audioCtx) audioCtx = new AudioContext();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const now = audioCtx.currentTime;
+        // E5 note
+        const osc1 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        osc1.frequency.setValueAtTime(659.25, now);
+        gain1.gain.setValueAtTime(0.3, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.65);
+
+        // C5 note
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
+        osc2.frequency.setValueAtTime(523.25, now + 0.45);
+        gain2.gain.setValueAtTime(0.35, now + 0.45);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        osc2.start(now + 0.45);
+        osc2.stop(now + 1.25);
+
+        if (text && 'speechSynthesis' in window) {
+          setTimeout(() => {
+            try {
+              window.speechSynthesis.cancel();
+              const utterance = new SpeechSynthesisUtterance(text);
+              utterance.rate = 0.95;
+              utterance.pitch = 1.05;
+              window.speechSynthesis.speak(utterance);
+            } catch (err) {}
+          }, 1100);
+        }
+      } catch (e) {
+        console.error('Audio chime error:', e);
+      }
+    }
+
+    async function triggerCallNext() {
+      // Find next in queue for current doctor or first in queue
+      const qIdx = adminState.queue.findIndex(q => q.docId === adminState.activeDocId);
+      if (qIdx !== -1) {
+        const next = adminState.queue.splice(qIdx, 1)[0];
+        updateActiveDisplay(next.token, next.patient, next.phone, `${next.dept} Consultation • ${adminState.activeDocName}`);
+        renderQueueTable();
+        playChime(`Ding-Dong! Now calling Token ${next.token}, ${next.patient}, for ${adminState.activeDocName}, ${adminState.activeRoom}`);
+      } else if (adminState.queue.length > 0) {
+        const next = adminState.queue.shift();
+        updateActiveDisplay(next.token, next.patient, next.phone, `${next.dept} Consultation • ${adminState.activeDocName}`);
+        renderQueueTable();
+        playChime(`Ding-Dong! Now calling Token ${next.token}, ${next.patient}, for ${adminState.activeDocName}, ${adminState.activeRoom}`);
+      } else {
+        alert('All waiting patients in queue have been called!');
+      }
+
+      // Notify Cloudflare Functions API
+      try {
+        await fetch('/api/queue', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'call_next', practitioner_id: adminState.activeDocId })
+        });
+      } catch (e) {}
+    }
+
+    function triggerRecall() {
+      playChime(`Ding-Dong! Reminder: Token ${adminState.activeToken}, ${adminState.activePatient}, please proceed to ${adminState.activeRoom}`);
+    }
+
+    function triggerCompleteAndRx() {
+      const oldToken = adminState.activeToken;
+      const oldPatient = adminState.activePatient;
+      // Preload to Rx tab
+      loadPatientToRx(oldPatient, adminState.activePhone, 'Consultation Completed. Follow-up regimen.');
+      // Switch tab to Rx
+      const tabBtn = document.querySelectorAll('.tab-btn')[1];
+      switchAdminTab('rx', tabBtn);
+      alert(`Consultation for ${oldToken} (${oldPatient}) marked complete. Rx builder is ready for your prescription.`);
+    }
+
+    function triggerSkip() {
+      const skipped = adminState.activeToken;
+      updateActiveDisplay('---', 'Ready for Next', '', 'Free Cabin');
+      playChime(`Token ${skipped} marked as no show.`);
+    }
+
+    function testPaChimeOnly() {
+      playChime(`Ding-Dong! Token ${adminState.activeToken}, ${adminState.activePatient}, ${adminState.activeDocName}, ${adminState.activeRoom}`);
+    }
+
+    function callDirectToken(token, patient, docId) {
+      const idx = adminState.queue.findIndex(q => q.token === token);
+      if (idx !== -1) {
+        adminState.queue.splice(idx, 1);
+        updateActiveDisplay(token, patient, '+91 98450 00000', `Direct Called • ${adminState.activeDocName}`);
+        renderQueueTable();
+        playChime(`Ding-Dong! Now calling Token ${token}, ${patient}, for ${adminState.activeDocName}, ${adminState.activeRoom}`);
+      }
+    }
+
+    function renderQueueTable() {
+      const tbody = document.getElementById('adminQueueRows');
+      tbody.innerHTML = adminState.queue.map(q => `
+        <tr>
+          <td><span class="table-token-badge">#${q.token}</span></td>
+          <td><strong>${q.patient}</strong><br><span style="font-size:10px; color:#94A3B8;">${q.phone}</span></td>
+          <td>${q.dept}<br><span style="font-size:10px; color:#94A3B8;">${q.room}</span></td>
+          <td>${q.time}</td>
+          <td><button class="btn-row-action" onclick="callDirectToken('${q.token}', '${q.patient}', '${q.docId}')">Call Now</button></td>
+        </tr>
+      `).join('');
+      document.getElementById('queueCountBadge').textContent = `${adminState.queue.length} Patients Waiting`;
+      document.getElementById('kpiWaitCount').textContent = adminState.queue.length;
+    }
+
+    async function submitWalkIn() {
+      const name = document.getElementById('walkinName').value.trim();
+      const phone = document.getElementById('walkinPhone').value.trim();
+      const docSelect = document.getElementById('walkinDoctor');
+      const docId = docSelect.value;
+      const prefix = docId === 'doc_02' ? 'B' : (docId === 'doc_03' ? 'C' : 'A');
+      const room = docId === 'doc_02' ? 'Room 104' : (docId === 'doc_03' ? 'Room 108' : 'Room 101');
+      const dept = docId === 'doc_02' ? 'Dental' : (docId === 'doc_03' ? 'Pediatric' : 'Dermatology');
+
+      if (!name) { alert('Please enter walk-in patient name.'); return; }
+
+      const num = Math.floor(Math.random() * 40) + 20;
+      const newToken = `${prefix}-${num}`;
+
+      adminState.queue.push({
+        token: newToken,
+        patient: name,
+        phone: phone || '+91 98450 00000',
+        dept: dept,
+        room: room,
+        time: 'Instant Walk-in',
+        docId: docId
+      });
+
+      renderQueueTable();
+      document.getElementById('walkinName').value = '';
+      document.getElementById('walkinPhone').value = '';
+      alert(`Walk-In Token #${newToken} generated for ${name}! Added to queue.`);
+      playChime(`Walk in registered. Token ${newToken} for ${name}`);
+    }
+
+    // ========================================================
+    // TAB 2: RX BUILDER LOGIC
+    // ========================================================
+    function loadActiveConsultationData() {
+      loadPatientToRx(adminState.activePatient, adminState.activePhone, 'Acne Vulgaris / Dermatitis');
+    }
+
+    function loadPatientToRx(name, phone, defaultDiag) {
+      document.getElementById('rxPatientName').value = name;
+      document.getElementById('rxPatientPhone').value = phone;
+      document.getElementById('rxDiagnosis').value = defaultDiag || 'Clinical Examination Followup';
+      updateRxPreview();
+    }
+
+    function addMedRow() {
+      const tbody = document.getElementById('medTableBody');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" class="admin-input med-name" style="width:100%;" value="Amoxicillin 500mg" placeholder="Drug Name"></td>
+        <td><input type="text" class="admin-input med-dose" style="width:100%;" value="1 Cap"></td>
+        <td><input type="text" class="admin-input med-freq" style="width:100%;" value="1-0-1"></td>
+        <td><input type="text" class="admin-input med-days" style="width:100%;" value="5 Days"></td>
+        <td><input type="text" class="admin-input med-inst" style="width:100%;" value="After meals"></td>
+        <td><button type="button" class="btn-del-row" onclick="deleteMedRow(this)">×</button></td>
+      `;
+      tbody.appendChild(tr);
+      updateRxPreview();
+    }
+
+    function deleteMedRow(btn) {
+      btn.closest('tr').remove();
+      updateRxPreview();
+    }
+
+    function updateRxPreview() {
+      const name = document.getElementById('rxPatientName').value;
+      const age = document.getElementById('rxPatientAge').value;
+      const gen = document.getElementById('rxPatientGender').value;
+      const phone = document.getElementById('rxPatientPhone').value;
+      const diag = document.getElementById('rxDiagnosis').value;
+      const advice = document.getElementById('rxAdvice').value;
+      const followUp = document.getElementById('rxFollowUp').value;
+
+      document.getElementById('previewPatName').textContent = name;
+      document.getElementById('previewPatAge').textContent = age;
+      document.getElementById('previewPatGen').textContent = gen;
+      document.getElementById('previewPatPhone').textContent = phone;
+      document.getElementById('previewDiag').textContent = diag;
+      document.getElementById('previewAdvice').textContent = advice;
+      document.getElementById('previewFollowUp').textContent = followUp;
+
+      document.getElementById('previewBp').textContent = document.getElementById('rxBp').value;
+      document.getElementById('previewPulse').textContent = document.getElementById('rxPulse').value;
+      document.getElementById('previewWeight').textContent = document.getElementById('rxWeight').value + 'kg';
+      document.getElementById('previewSpo2').textContent = document.getElementById('rxSpo2').value;
+
+      // Extract meds
+      const rows = document.querySelectorAll('#medTableBody tr');
+      const listDiv = document.getElementById('previewMedList');
+      listDiv.innerHTML = '';
+
+      rows.forEach((r, idx) => {
+        const drug = r.querySelector('.med-name').value;
+        const dose = r.querySelector('.med-dose').value;
+        const freq = r.querySelector('.med-freq').value;
+        const days = r.querySelector('.med-days').value;
+        const inst = r.querySelector('.med-inst').value;
+
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'rx-med-preview-row';
+        rowDiv.innerHTML = `
+          <span>${idx + 1}. ${drug} (${dose})</span>
+          <span><strong>${freq}</strong> • ${days} (${inst})</span>
+        `;
+        listDiv.appendChild(rowDiv);
+      });
+    }
+
+    // Attach real-time input change listeners to sync preview
+    ['rxPatientName', 'rxPatientAge', 'rxPatientPhone', 'rxDiagnosis', 'rxAdvice', 'rxFollowUp', 'rxBp', 'rxPulse', 'rxWeight', 'rxSpo2'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', updateRxPreview);
+    });
+
+    async function saveAndPreviewRx() {
+      updateRxPreview();
+
+      const name = document.getElementById('rxPatientName').value;
+      const phone = document.getElementById('rxPatientPhone').value;
+      const diag = document.getElementById('rxDiagnosis').value;
+
+      const medicines = [];
+      document.querySelectorAll('#medTableBody tr').forEach(r => {
+        medicines.push({
+          name: r.querySelector('.med-name').value,
+          dosage: r.querySelector('.med-dose').value,
+          freq: r.querySelector('.med-freq').value,
+          days: r.querySelector('.med-days').value,
+          instructions: r.querySelector('.med-inst').value
+        });
+      });
+
+      const payload = {
+        patient_name: name,
+        patient_phone: phone,
+        patient_age: document.getElementById('rxPatientAge').value,
+        patient_gender: document.getElementById('rxPatientGender').value,
+        doctor_name: adminState.activeDocName,
+        department: adminState.activeDept,
+        room_no: adminState.activeRoom,
+        diagnosis: diag,
+        vitals_bp: document.getElementById('rxBp').value,
+        vitals_pulse: document.getElementById('rxPulse').value,
+        vitals_weight: document.getElementById('rxWeight').value,
+        vitals_temp: document.getElementById('rxTemp').value,
+        vitals_spo2: document.getElementById('rxSpo2').value,
+        medicines: medicines,
+        doctor_advice: document.getElementById('rxAdvice').value,
+        follow_up: document.getElementById('rxFollowUp').value
+      };
+
+      try {
+        const res = await fetch('/api/rx', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        alert(`Prescription saved successfully! Ref: #${data.rx_id || 'RX-SAVED'}. Official letterhead is ready for dispatch.`);
+      } catch (err) {
+        alert('Prescription recorded in session. Ready for dispatch.');
+      }
+    }
+
+    function dispatchRxWhatsApp() {
+      updateRxPreview();
+      const name = document.getElementById('rxPatientName').value;
+      const phone = document.getElementById('rxPatientPhone').value.replace(/[^0-9]/g, '');
+      const diag = document.getElementById('rxDiagnosis').value;
+      const advice = document.getElementById('rxAdvice').value;
+      const followUp = document.getElementById('rxFollowUp').value;
+
+      let medSummary = '';
+      document.querySelectorAll('#medTableBody tr').forEach((r, idx) => {
+        medSummary += `\n${idx + 1}. ${r.querySelector('.med-name').value} (${r.querySelector('.med-dose').value}) - ${r.querySelector('.med-freq').value} for ${r.querySelector('.med-days').value} (${r.querySelector('.med-inst').value})`;
+      });
+
+      const text = encodeURIComponent(
+        `*DIGITAL PRESCRIPTION // AURA HEALTH*\n` +
+        `*Patient:* ${name}\n` +
+        `*Doctor:* ${adminState.activeDocName} (${adminState.activeRoom})\n` +
+        `*Diagnosis:* ${diag}\n\n` +
+        `*Prescribed Medications:*${medSummary}\n\n` +
+        `*Doctor Advice:* ${advice}\n` +
+        `*Next Review:* ${followUp}\n\n` +
+        `Official e-Rx Download: https://tpl-serp-clinic-salon-crm.pages.dev/admin.html?view=rx`
+      );
+
+      const targetUrl = phone ? `https://wa.me/${phone}?text=${text}` : `https://wa.me/?text=${text}`;
+      window.open(targetUrl, '_blank');
+    }
+
+    // Initialize
+    updateRxPreview();
+  </script>
 </body>
 </html>

@@ -3,224 +3,1882 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-wl-brand>AURA HEALTH // OPD Appointments & Queue</title>
+  <title data-wl-brand>AURA HEALTH // OPD Appointments & Live Token Queue TV</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="theme-tokens.css">
   <script src="whitelabel.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* Clinical Swiss Trust & Live Queue Layout Blueprint */
+    :root {
+      --tv-bg: #0B1120;
+      --tv-card-bg: #131F37;
+      --tv-card-border: #1E293B;
+      --tv-cyan: #38BDF8;
+      --tv-teal: #2DD4BF;
+      --tv-amber: #FBBF24;
+      --tv-green: #34D399;
+    }
+
     body {
       background: var(--bg-main, #F0FDFA);
       color: var(--color-dark, #0F172A);
       font-family: var(--font-primary, 'Plus Jakarta Sans', sans-serif);
-      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
+
+    /* Top Trust Bar */
     .trust-bar {
-      background: #0D9488;
-      color: #FFF;
-      padding: 8px 30px;
+      background: #0F766E;
+      color: #E6FFFA;
+      padding: 7px 32px;
       font-family: var(--font-mono, monospace);
       font-size: 11px;
-      display: flex;
-      justify-content: space-between;
-      letter-spacing: 0.5px;
-    }
-    .opd-header {
-      background: #FFF;
-      border-bottom: 1px solid var(--border-color, #CCFBF1);
-      padding: 16px 40px;
+      font-weight: 500;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+    .trust-bar-items {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+    .trust-badge-pill {
+      background: rgba(255,255,255,0.15);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 10px;
+    }
+
+    /* Main Header */
+    .opd-header {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-color, #CCFBF1);
+      padding: 14px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      box-shadow: 0 2px 8px rgba(13, 148, 136, 0.04);
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
     .clinic-logo {
       font-family: var(--font-accent, 'Instrument Serif', serif);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--color-dark, #0F172A);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .clinic-logo span {
+      color: var(--color-primary, #0D9488);
+      font-style: italic;
+    }
+    .brand-tagline {
+      font-size: 11px;
+      color: #64748B;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-left: 1px solid #CBD5E1;
+      padding-left: 14px;
+    }
+
+    /* Header Nav & View Switcher */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .view-toggle-group {
+      display: inline-flex;
+      background: #E2E8F0;
+      border-radius: 8px;
+      padding: 3px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .view-btn {
+      border: none;
+      background: transparent;
+      padding: 7px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font-primary);
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .view-btn.active {
+      background: #FFFFFF;
+      color: #0F172A;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .btn-admin {
+      background: #0F172A;
+      color: #F8FAFC;
+      border: 1px solid #1E293B;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s;
+    }
+    .btn-admin:hover {
+      background: #1E293B;
+    }
+
+    /* Mode Views Container */
+    .view-container {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 28px 24px 60px;
+      flex: 1;
+    }
+
+    /* ========================================================
+       MODE 1: BOOKING & APPOINTMENT WIZARD VIEW
+       ======================================================== */
+    .booking-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .booking-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card-panel {
+      background: #FFFFFF;
+      border: 1px solid #CCFBF1;
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 10px 25px rgba(13, 148, 136, 0.05);
+    }
+
+    .wizard-step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+    .wizard-title {
+      font-family: var(--font-accent, serif);
       font-size: 28px;
       color: #0F172A;
-      text-decoration: none;
+      line-height: 1.2;
+    }
+    .wizard-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: #CCFBF1;
+      color: #0F766E;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 700;
     }
 
-    /* 2-Column Clinical Layout */
-    .clinic-grid {
-      max-width: 1200px;
-      margin: 40px auto;
-      padding: 0 24px;
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 32px;
-    }
-    @media (max-width: 900px) { .clinic-grid { grid-template-columns: 1fr; } }
-
-    /* Left Appointment Wizard Card */
-    .wizard-card {
-      background: #FFF;
-      border: 1px solid #CCFBF1;
-      border-radius: 12px;
-      padding: 32px;
-      box-shadow: 0 10px 25px rgba(13, 148, 136, 0.05);
+    /* Department Pills */
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748B;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     .dept-tabs {
       display: flex;
       gap: 8px;
-      margin-bottom: 24px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 18px;
     }
     .dept-tab {
-      background: #F0FDFA;
-      border: 1px solid #99F6E4;
-      padding: 8px 14px;
-      border-radius: 6px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      padding: 7px 14px;
+      border-radius: 8px;
       font-size: 12px;
       font-weight: 600;
-      color: #0D9488;
+      color: #475569;
       cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
     }
-    .dept-tab.active { background: #0D9488; color: #FFF; }
+    .dept-tab.active {
+      background: #0D9488;
+      border-color: #0D9488;
+      color: #FFFFFF;
+    }
 
-    .doc-card {
+    /* Doctor Cards */
+    .doctor-picker {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    .doctor-card {
+      border: 1.5px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 14px 16px;
       display: flex;
       align-items: center;
-      gap: 16px;
-      padding: 14px;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background: #FFFFFF;
+      position: relative;
+    }
+    .doctor-card:hover {
+      border-color: #99F6E4;
+      background: #F0FDFA;
+    }
+    .doctor-card.selected {
+      border-color: #0D9488;
+      background: #F0FDFA;
+      box-shadow: 0 0 0 1px #0D9488;
+    }
+    .doctor-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #CCFBF1;
+      color: #0D9488;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+    .doctor-meta {
+      flex: 1;
+    }
+    .doctor-name {
+      font-weight: 700;
+      font-size: 15px;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .doctor-title {
+      font-size: 12px;
+      color: #64748B;
+      margin-top: 2px;
+    }
+    .doctor-room {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #0D9488;
+      font-weight: 700;
+      margin-top: 4px;
+      display: flex;
+      gap: 12px;
+    }
+    .doctor-radio-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #CBD5E1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      font-size: 12px;
+    }
+    .doctor-card.selected .doctor-radio-check {
+      border-color: #0D9488;
+      background: #0D9488;
+      color: #FFFFFF;
+    }
+
+    /* Procedure / Service Picker */
+    .service-picker {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    @media (max-width: 600px) {
+      .service-picker {
+        grid-template-columns: 1fr;
+      }
+    }
+    .service-chip {
       border: 1px solid #E2E8F0;
       border-radius: 8px;
-      margin-bottom: 14px;
+      padding: 10px 12px;
       cursor: pointer;
+      transition: all 0.15s ease;
+      background: #FFFFFF;
     }
-    .doc-card.selected { border-color: #0D9488; background: #F0FDFA; }
+    .service-chip:hover {
+      border-color: #0D9488;
+    }
+    .service-chip.selected {
+      border-color: #0D9488;
+      background: #F0FDFA;
+    }
+    .service-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0F172A;
+    }
+    .service-detail {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #64748B;
+      margin-top: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Date & Slot Picker */
+    .date-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .date-pill {
+      flex: 1;
+      border: 1px solid #E2E8F0;
+      background: #F8FAFC;
+      border-radius: 8px;
+      padding: 8px 12px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+    }
+    .date-pill.active {
+      border-color: #0D9488;
+      background: #0D9488;
+      color: #FFFFFF;
+    }
 
     .slot-matrix {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 8px;
-      margin: 16px 0 24px;
+      margin-bottom: 22px;
+    }
+    @media (max-width: 500px) {
+      .slot-matrix {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
     .slot-pill {
-      background: #FFF;
+      background: #FFFFFF;
       border: 1px solid #CBD5E1;
-      padding: 8px;
+      padding: 9px 8px;
       text-align: center;
       font-family: var(--font-mono);
       font-size: 12px;
-      border-radius: 6px;
+      font-weight: 600;
+      border-radius: 8px;
       cursor: pointer;
+      transition: all 0.15s ease;
+      color: #0F172A;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
     }
-    .slot-pill.active { background: #0D9488; border-color: #0D9488; color: #FFF; font-weight: 700; }
+    .slot-pill:hover {
+      border-color: #0D9488;
+      background: #F0FDFA;
+    }
+    .slot-pill.active {
+      background: #0D9488;
+      border-color: #0D9488;
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+    .slot-sub {
+      font-size: 9px;
+      color: #64748B;
+      font-weight: normal;
+    }
+    .slot-pill.active .slot-sub {
+      color: #CCFBF1;
+    }
 
-    /* Right Waiting-Room TV Board */
-    .tv-display {
-      background: #0F172A;
-      color: #FFF;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-      font-family: var(--font-mono);
+    /* Patient Details Form */
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
     }
-    .tv-header {
-      border-bottom: 2px solid #334155;
-      padding-bottom: 12px;
+    @media (max-width: 500px) {
+      .input-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .field-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .field-wrap label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+    }
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: var(--font-primary);
+      color: #0F172A;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #0D9488;
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+    }
+    .gender-select {
+      display: flex;
+      gap: 8px;
+    }
+    .gender-btn {
+      flex: 1;
+      border: 1px solid #CBD5E1;
+      background: #FFFFFF;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #475569;
+    }
+    .gender-btn.active {
+      background: #0D9488;
+      border-color: #0D9488;
+      color: #FFFFFF;
+    }
+
+    .btn-book {
+      width: 100%;
+      background: #0D9488;
+      color: #FFFFFF;
+      border: none;
+      padding: 15px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 15px rgba(13, 148, 136, 0.25);
+      transition: all 0.2s ease;
+      margin-top: 16px;
+    }
+    .btn-book:hover {
+      background: #0F766E;
+      transform: translateY(-1px);
+    }
+
+    /* Right Preview / Live Mini Queue Widget */
+    .mini-tv-card {
+      background: var(--tv-bg);
+      color: #FFFFFF;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: var(--shadow-tv);
+      border: 1px solid #1E293B;
+      position: sticky;
+      top: 96px;
+    }
+    .mini-tv-header {
       display: flex;
       justify-content: space-between;
-      color: #38BDF8;
-      font-size: 12px;
+      align-items: center;
+      border-bottom: 1px solid #1E293B;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+      font-family: var(--font-mono);
+      font-size: 11px;
     }
-    .calling-box {
+    .status-live-chip {
+      background: rgba(45, 212, 191, 0.15);
+      color: var(--tv-teal);
+      border: 1px solid rgba(45, 212, 191, 0.3);
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .active-cabin-callout {
+      background: #131F37;
+      border: 1.5px solid var(--tv-teal);
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .active-cabin-room {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--tv-cyan);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .big-token-display {
+      font-size: 58px;
+      font-weight: 800;
+      color: var(--tv-teal);
+      font-family: var(--font-mono);
+      line-height: 1;
+      margin: 4px 0 8px;
+      letter-spacing: -1px;
+    }
+    .active-patient-line {
+      font-size: 13px;
+      font-weight: 600;
+      color: #F8FAFC;
+    }
+    .active-doc-line {
+      font-size: 11px;
+      color: #94A3B8;
+      margin-top: 2px;
+    }
+
+    .mini-queue-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .mini-queue-row {
       background: #1E293B;
-      border: 2px solid #0D9488;
+      padding: 10px 12px;
       border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-family: var(--font-mono);
+    }
+    .mini-token-pill {
+      font-weight: 700;
+      color: var(--tv-cyan);
+    }
+    .mini-wait-pill {
+      font-size: 10px;
+      color: var(--tv-amber);
+      background: rgba(245, 158, 11, 0.15);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .btn-chime-test {
+      width: 100%;
+      background: #1E293B;
+      color: #94A3B8;
+      border: 1px solid #334155;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-chime-test:hover {
+      background: #334155;
+      color: #FFFFFF;
+    }
+
+    /* ========================================================
+       MODE 2: FULLSCREEN WAITING-ROOM TOKEN TV BOARD
+       ======================================================== */
+    .tv-mode-wrapper {
+      display: none;
+      background: var(--tv-bg);
+      color: #FFFFFF;
+      min-height: calc(100vh - 120px);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: var(--shadow-tv);
+      border: 1px solid #1E293B;
+    }
+    .tv-mode-wrapper.active {
+      display: block;
+    }
+
+    .tv-top-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #1E293B;
+      margin-bottom: 28px;
+    }
+    .tv-brand-title {
+      font-family: var(--font-accent);
+      font-size: 36px;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .tv-brand-title span {
+      color: var(--tv-teal);
+      font-style: italic;
+    }
+    .tv-clock-box {
+      font-family: var(--font-mono);
+      text-align: right;
+    }
+    .tv-clock {
+      font-size: 32px;
+      font-weight: 700;
+      color: #F8FAFC;
+      letter-spacing: 2px;
+    }
+    .tv-clock-sub {
+      font-size: 11px;
+      color: var(--tv-cyan);
+      letter-spacing: 1px;
+    }
+
+    /* Cabin Calling Board 3-Grid */
+    .cabins-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 900px) {
+      .cabins-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .cabin-card {
+      background: var(--tv-card-bg);
+      border: 2px solid var(--tv-card-border);
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .cabin-card.calling {
+      border-color: var(--tv-teal);
+      animation: liveGlow 2s infinite ease-in-out;
+    }
+    .cabin-card.ready {
+      border-color: #38BDF8;
+    }
+    .cabin-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--tv-cyan);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .cabin-doctor-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #F8FAFC;
+    }
+    .cabin-dept {
+      font-size: 11px;
+      color: #94A3B8;
+      margin-bottom: 12px;
+    }
+    .cabin-token-huge {
+      font-family: var(--font-mono);
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--tv-teal);
+      letter-spacing: -2px;
+      margin: 10px 0;
+      text-shadow: 0 0 20px rgba(45, 212, 191, 0.4);
+    }
+    .cabin-patient-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-top: 6px;
+    }
+    .cabin-service {
+      font-size: 12px;
+      color: #94A3B8;
+      margin-top: 4px;
+    }
+    .cabin-state-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 14px;
+    }
+    .state-consulting {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34D399;
+      border: 1px solid rgba(52, 211, 153, 0.4);
+    }
+    .state-calling {
+      background: rgba(245, 158, 11, 0.2);
+      color: #FBBF24;
+      border: 1px solid rgba(251, 191, 36, 0.4);
+    }
+
+    /* Queue & Doctor Status Lower Section */
+    .tv-lower-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 800px) {
+      .tv-lower-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tv-panel {
+      background: #111C33;
+      border: 1px solid #1E293B;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .tv-panel-title {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--tv-cyan);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .tv-queue-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+    .tv-queue-table th {
+      text-align: left;
+      color: #64748B;
+      font-size: 11px;
+      padding: 8px 12px;
+      border-bottom: 1px solid #1E293B;
+    }
+    .tv-queue-table td {
+      padding: 12px;
+      border-bottom: 1px solid #1E293B;
+      color: #E2E8F0;
+    }
+    .tv-token-cell {
+      font-weight: 800;
+      color: var(--tv-teal);
+    }
+
+    .doc-status-card {
+      background: #182542;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .doc-status-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+    .doc-status-sub {
+      font-size: 11px;
+      color: #94A3B8;
+      font-family: var(--font-mono);
+    }
+
+    /* TV Bottom Ticker Tape */
+    .tv-ticker {
+      margin-top: 28px;
+      background: #0B1120;
+      border: 1px solid #1E293B;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #94A3B8;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      overflow: hidden;
+    }
+    .ticker-tag {
+      background: var(--tv-teal);
+      color: #0B1120;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    /* Token Booking Confirmation Modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+    .token-modal {
+      background: #FFFFFF;
+      border-radius: 16px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+      border: 1px solid #CCFBF1;
+      overflow: hidden;
+      animation: tvPulse 0.3s ease-out;
+    }
+    .modal-header {
+      background: #0D9488;
+      color: #FFFFFF;
       padding: 20px;
       text-align: center;
-      margin: 20px 0;
     }
-    .token-big { font-size: 54px; font-weight: 800; color: #2DD4BF; margin: 6px 0; }
+    .modal-body {
+      padding: 24px;
+    }
+    .token-ticket-hero {
+      background: #F0FDFA;
+      border: 2px dashed #0D9488;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .token-number-hero {
+      font-family: var(--font-mono);
+      font-size: 48px;
+      font-weight: 800;
+      color: #0D9488;
+      margin: 4px 0;
+    }
+    .qr-placeholder {
+      display: inline-block;
+      padding: 8px;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .qr-svg {
+      width: 90px;
+      height: 90px;
+      display: block;
+    }
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn-wa-share {
+      background: #25D366;
+      color: #FFFFFF;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-switch-tv {
+      background: #0F172A;
+      color: #FFFFFF;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-modal-close {
+      background: #F1F5F9;
+      color: #475569;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body data-layout-archetype="clinical-slot-scheduler">
+
+  <!-- Top Trust & Telemetry Bar -->
   <div class="trust-bar">
-    <span>NABH ACCREDITED DAYCARE & DENTAL CLINIC</span>
-    <span>OPD TIMINGS: 08:30 AM – 08:00 PM</span>
-    <span>EMERGENCY HELPLINE: 1800-419-8800</span>
+    <div class="trust-bar-items">
+      <span class="trust-badge-pill">NABH ACCREDITED</span>
+      <span>OPD CLINICAL HOURS: 08:30 AM – 08:30 PM</span>
+      <span>CHAIR / CABIN CAPACITY: 3 ROOMS ACTIVE</span>
+    </div>
+    <div class="trust-bar-items">
+      <span>EMERGENCY HELPLINE: 1800-419-8800</span>
+      <span id="trustClock" style="font-weight:700;">10:45:00 AM</span>
+    </div>
   </div>
 
+  <!-- Primary Header -->
   <header class="opd-header">
-    <a href="#" class="clinic-logo" data-wl-brand>AURA HEALTH CLINICS</a>
-    <div style="font-family:var(--font-mono); font-size:12px;">
-      <a href="admin.html" style="color:#0D9488; text-decoration:none; font-weight:700;">[ RECEPTIONIST TOKEN CALLER ]</a>
+    <div class="brand-wrap">
+      <a href="index.html" class="clinic-logo">
+        <span data-wl-brand>AURA HEALTH</span>
+      </a>
+      <div class="brand-tagline" data-wl-tagline>CLINICAL OPD & LIVE QUEUE SYSTEM</div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Toggle between Booking Form and Waiting TV Board -->
+      <div class="view-toggle-group">
+        <button class="view-btn active" id="btnViewBooking" onclick="switchView('booking')">
+          📅 Book Consultation
+        </button>
+        <button class="view-btn" id="btnViewTv" onclick="switchView('tv')">
+          📺 Waiting-Room TV Screen
+        </button>
+      </div>
+
+      <a href="admin.html" class="btn-admin">
+        <span>⚙️ Reception Console</span>
+      </a>
     </div>
   </header>
 
-  <div class="clinic-grid">
-    <!-- Booking Wizard -->
-    <div class="wizard-card">
-      <h2 style="font-family:var(--font-accent); font-size:28px; margin-bottom:16px;">Schedule Clinical Consultation</h2>
+  <!-- Main View Container -->
+  <main class="view-container">
+
+    <!-- ========================================================
+         VIEW 1: PATIENT APPOINTMENT BOOKING WIZARD
+         ======================================================== -->
+    <div id="bookingSection" class="booking-grid">
       
-      <div class="dept-tabs">
-        <button class="dept-tab active" onclick="switchDept('Cardiology')">CARDIOLOGY</button>
-        <button class="dept-tab" onclick="switchDept('Dental')">DENTAL & MAXILLO</button>
-        <button class="dept-tab" onclick="switchDept('Dermatology')">DERMATOLOGY</button>
+      <!-- Left: Interactive Booking Form -->
+      <div class="card-panel">
+        <div class="wizard-step-header">
+          <div>
+            <h1 class="wizard-title">Book Consultation Slot</h1>
+            <p style="font-size:13px; color:#64748B; margin-top:4px;">Select medical practitioner, required clinical service, and preferred token slot.</p>
+          </div>
+          <span class="wizard-badge">INSTANT OPD TOKEN</span>
+        </div>
+
+        <!-- 1. Department Tabs -->
+        <div class="section-label">
+          <span>1. Medical Specialty / Department</span>
+          <span id="activeDeptLabel" style="color:#0D9488;">DERMATOLOGY</span>
+        </div>
+        <div class="dept-tabs">
+          <button class="dept-tab active" onclick="filterDept('Dermatology & Skin Clinic', this)">Dermatology & Aesthetics</button>
+          <button class="dept-tab" onclick="filterDept('Dental & Orthodontics', this)">Dental & Orthodontics</button>
+          <button class="dept-tab" onclick="filterDept('General & Preventive Care', this)">General & Pediatric Care</button>
+        </div>
+
+        <!-- 2. Doctor Selector -->
+        <div class="section-label">
+          <span>2. Select Attending Specialist</span>
+        </div>
+        <div class="doctor-picker" id="doctorPickerList">
+          <!-- Doctor 1 -->
+          <div class="doctor-card selected" onclick="selectDoctor('doc_01', 'Dr. Sarah Smith, MD', 'Dermatology & Skin Clinic', 'Room 101', 'A', this)">
+            <div class="doctor-avatar">DR</div>
+            <div class="doctor-meta">
+              <div class="doctor-name">
+                <span>Dr. Sarah Smith, MD</span>
+                <span class="pulse-badge"><span class="pulse-dot"></span> <span style="font-size:10px; color:#10B981; font-weight:700;">AVAILABLE</span></span>
+              </div>
+              <div class="doctor-title">Chief Dermatologist & Aesthetics • 14 Yrs Exp</div>
+              <div class="doctor-room">
+                <span>📍 Cabin 01 (Room 101)</span>
+                <span>⏱️ Avg Consult: 15 Min</span>
+                <span>Fee: ₹800</span>
+              </div>
+            </div>
+            <div class="doctor-radio-check">✓</div>
+          </div>
+
+          <!-- Doctor 2 -->
+          <div class="doctor-card" onclick="selectDoctor('doc_02', 'Dr. Arvind Menon, BDS, MDS', 'Dental & Orthodontics', 'Room 104', 'B', this)">
+            <div class="doctor-avatar" style="background:#E0F2FE; color:#0284C7;">DR</div>
+            <div class="doctor-meta">
+              <div class="doctor-name">
+                <span>Dr. Arvind Menon, BDS, MDS</span>
+                <span class="pulse-badge"><span class="pulse-dot"></span> <span style="font-size:10px; color:#10B981; font-weight:700;">AVAILABLE</span></span>
+              </div>
+              <div class="doctor-title">Senior Dental Surgeon & Implantologist • 11 Yrs Exp</div>
+              <div class="doctor-room">
+                <span>📍 Cabin 02 (Room 104)</span>
+                <span>⏱️ Avg Consult: 20 Min</span>
+                <span>Fee: ₹600</span>
+              </div>
+            </div>
+            <div class="doctor-radio-check">✓</div>
+          </div>
+
+          <!-- Doctor 3 -->
+          <div class="doctor-card" onclick="selectDoctor('doc_03', 'Dr. Shalini Ray, MBBS, DNB', 'General & Preventive Care', 'Room 108', 'C', this)">
+            <div class="doctor-avatar" style="background:#FEF3C7; color:#D97706;">DR</div>
+            <div class="doctor-meta">
+              <div class="doctor-name">
+                <span>Dr. Shalini Ray, MBBS, DNB</span>
+                <span class="pulse-badge"><span class="pulse-dot"></span> <span style="font-size:10px; color:#10B981; font-weight:700;">AVAILABLE</span></span>
+              </div>
+              <div class="doctor-title">Consultant Pediatrician & Family Health • 9 Yrs Exp</div>
+              <div class="doctor-room">
+                <span>📍 Cabin 03 (Room 108)</span>
+                <span>⏱️ Avg Consult: 12 Min</span>
+                <span>Fee: ₹500</span>
+              </div>
+            </div>
+            <div class="doctor-radio-check">✓</div>
+          </div>
+        </div>
+
+        <!-- 3. Procedure / Service Selection -->
+        <div class="section-label">
+          <span>3. Clinical Procedure / Reason for Visit</span>
+        </div>
+        <div class="service-picker" id="servicePickerGrid">
+          <!-- Dynamic Services will populate here -->
+        </div>
+
+        <!-- 4. Date & Slot Time Matrix -->
+        <div class="section-label">
+          <span>4. Appointment Date & Token Slot</span>
+        </div>
+        <div class="date-row">
+          <button class="date-pill active" onclick="selectDate('Today (Live Queue)', this)">Today (Immediate Live Queue)</button>
+          <button class="date-pill" onclick="selectDate('Tomorrow', this)">Tomorrow</button>
+          <button class="date-pill" onclick="selectDate('Day After', this)">Day After</button>
+        </div>
+        <div class="slot-matrix" id="slotMatrix">
+          <div class="slot-pill active" onclick="selectSlot('10:30 AM', this)">
+            <span>10:30 AM</span>
+            <span class="slot-sub">Fast Filling</span>
+          </div>
+          <div class="slot-pill" onclick="selectSlot('11:00 AM', this)">
+            <span>11:00 AM</span>
+            <span class="slot-sub">Available</span>
+          </div>
+          <div class="slot-pill" onclick="selectSlot('11:30 AM', this)">
+            <span>11:30 AM</span>
+            <span class="slot-sub">Available</span>
+          </div>
+          <div class="slot-pill" onclick="selectSlot('12:00 PM', this)">
+            <span>12:00 PM</span>
+            <span class="slot-sub">Available</span>
+          </div>
+          <div class="slot-pill" onclick="selectSlot('03:30 PM', this)">
+            <span>03:30 PM</span>
+            <span class="slot-sub">Available</span>
+          </div>
+          <div class="slot-pill" onclick="selectSlot('04:00 PM', this)">
+            <span>04:00 PM</span>
+            <span class="slot-sub">Available</span>
+          </div>
+          <div class="slot-pill" onclick="selectSlot('04:30 PM', this)">
+            <span>04:30 PM</span>
+            <span class="slot-sub">Available</span>
+          </div>
+          <div class="slot-pill" onclick="selectSlot('05:00 PM', this)">
+            <span>05:00 PM</span>
+            <span class="slot-sub">Available</span>
+          </div>
+        </div>
+
+        <!-- 5. Patient Information -->
+        <div class="section-label">
+          <span>5. Patient Details</span>
+        </div>
+        <div class="input-grid">
+          <div class="field-wrap">
+            <label>Full Patient Name *</label>
+            <input type="text" id="patientName" class="form-input" placeholder="e.g. Divya Nambiar" required>
+          </div>
+          <div class="field-wrap">
+            <label>WhatsApp Mobile *</label>
+            <input type="tel" id="patientPhone" class="form-input" placeholder="+91 98450 11223" required>
+          </div>
+        </div>
+
+        <div class="input-grid" style="grid-template-columns: 1fr 1fr; margin-bottom:14px;">
+          <div class="field-wrap">
+            <label>Patient Age</label>
+            <input type="number" id="patientAge" class="form-input" placeholder="e.g. 29" value="28">
+          </div>
+          <div class="field-wrap">
+            <label>Gender</label>
+            <div class="gender-select">
+              <button type="button" class="gender-btn active" onclick="selectGender('Female', this)">Female</button>
+              <button type="button" class="gender-btn" onclick="selectGender('Male', this)">Male</button>
+              <button type="button" class="gender-btn" onclick="selectGender('Other', this)">Other</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-wrap" style="margin-bottom:16px;">
+          <label>Symptoms / Clinical Notes (Optional)</label>
+          <input type="text" id="patientNotes" class="form-input" placeholder="Brief notes for attending doctor / specialist">
+        </div>
+
+        <button type="button" class="btn-book" onclick="submitBooking()">
+          <span>GENERATE LIVE OPD TOKEN & CONFIRM APPOINTMENT</span>
+          <span>🎫</span>
+        </button>
       </div>
 
-      <div class="doc-card selected">
-        <div style="width:48px; height:48px; border-radius:50%; background:#99F6E4; display:flex; align-items:center; justify-content:center; font-weight:700; color:#0D9488;">DR</div>
+      <!-- Right: Live Mini TV Display & Queue Telemetry -->
+      <aside>
+        <div class="mini-tv-card">
+          <div class="mini-tv-header">
+            <span style="color:#94A3B8;">WAITING-ROOM TELEMETRY</span>
+            <span class="status-live-chip">
+              <span class="pulse-dot"></span> LIVE SYNC
+            </span>
+          </div>
+
+          <div class="active-cabin-callout">
+            <div class="active-cabin-room" id="miniCabinRoom">CABIN 01 • ROOM 101</div>
+            <div style="font-size:11px; color:#94A3B8;">NOW SERVING TOKEN</div>
+            <div class="big-token-display" id="miniCurrentToken">A-14</div>
+            <div class="active-patient-line" id="miniCurrentPatient">Vikramaditya Roy</div>
+            <div class="active-doc-line" id="miniCurrentDoc">Dr. Sarah Smith, MD • Dermatology</div>
+          </div>
+
+          <div style="font-size:11px; font-family:var(--font-mono); color:#94A3B8; margin-bottom:8px; display:flex; justify-content:space-between;">
+            <span>NEXT IN QUEUE</span>
+            <span>EST. WAIT</span>
+          </div>
+
+          <div class="mini-queue-list" id="miniQueueList">
+            <div class="mini-queue-row">
+              <span><span class="mini-token-pill">#A-15</span> Meera Venkatesh</span>
+              <span class="mini-wait-pill">~8 MIN</span>
+            </div>
+            <div class="mini-queue-row">
+              <span><span class="mini-token-pill">#B-04</span> Rahul Krishnan</span>
+              <span class="mini-wait-pill">~14 MIN</span>
+            </div>
+            <div class="mini-queue-row">
+              <span><span class="mini-token-pill">#C-08</span> Master Aarav</span>
+              <span class="mini-wait-pill">~20 MIN</span>
+            </div>
+          </div>
+
+          <button class="btn-chime-test" onclick="playWebAudioChime('Token A-14, Vikramaditya Roy, Dr. Sarah Smith, Room 101')">
+            <span>🔔 Play PA Token Chime Demo</span>
+          </button>
+          
+          <div style="margin-top:14px; text-align:center;">
+            <a href="javascript:void(0)" onclick="switchView('tv')" style="color:var(--tv-teal); font-size:12px; font-family:var(--font-mono); text-decoration:none;">
+              Expand Fullscreen Waiting TV Board ↗
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- ========================================================
+         VIEW 2: FULLSCREEN WAITING-ROOM TOKEN TV BOARD
+         ======================================================== -->
+    <div id="tvSection" class="tv-mode-wrapper">
+      
+      <!-- Top TV Header -->
+      <div class="tv-top-status">
         <div>
-          <div style="font-weight:700;">Dr. Roshan Varma, MD, DM</div>
-          <div style="font-size:12px; color:#64748B;">Chief Cardiologist • Cabin 01 • Fee: ₹600</div>
+          <div class="tv-brand-title">
+            <span data-wl-brand>AURA HEALTH</span>
+            <span style="font-size:20px; color:#94A3B8; font-family:var(--font-mono);">// OPD QUEUE MONITOR</span>
+          </div>
+          <div style="font-family:var(--font-mono); font-size:11px; color:#64748B; margin-top:4px;">
+            HIGH PRECISION QUEUE TELEMETRY • LIVE AUDIO CHIME ACTIVE 🔊
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:24px;">
+          <div class="tv-clock-box">
+            <div class="tv-clock" id="tvDigitalClock">10:45:12 AM</div>
+            <div class="tv-clock-sub">REAL-TIME OPD DISPATCH</div>
+          </div>
+
+          <button class="btn-chime-test" style="width:auto; padding:8px 16px;" onclick="toggleAudioMute()">
+            <span id="audioMuteIcon">🔊</span>
+            <span id="audioMuteText">PA Sound: ON</span>
+          </button>
+
+          <button class="view-btn active" style="background:#1E293B; color:#FFFFFF; border:1px solid #334155;" onclick="switchView('booking')">
+            ✕ Exit TV View
+          </button>
         </div>
       </div>
 
-      <div style="font-size:13px; font-weight:700; margin-top:16px;">AVAILABLE TIME SLOTS TODAY:</div>
-      <div class="slot-matrix">
-        <div class="slot-pill active" onclick="selectSlot(this)">10:30 AM</div>
-        <div class="slot-pill" onclick="selectSlot(this)">11:00 AM</div>
-        <div class="slot-pill" onclick="selectSlot(this)">11:30 AM</div>
-        <div class="slot-pill" onclick="selectSlot(this)">12:00 PM</div>
+      <!-- 3-Cabin Multi-Display Grid -->
+      <div class="cabins-grid">
+        <!-- Cabin 1 -->
+        <div class="cabin-card calling" id="tvCabin1">
+          <div class="cabin-badge">CABIN 01 • ROOM 101</div>
+          <div class="cabin-doctor-name">Dr. Sarah Smith, MD</div>
+          <div class="cabin-dept">Dermatology & Aesthetics</div>
+          <div style="font-size:10px; font-family:var(--font-mono); color:#94A3B8;">NOW SERVING TOKEN</div>
+          <div class="cabin-token-huge" id="tvTokenCabin1">A-14</div>
+          <div class="cabin-patient-name" id="tvPatientCabin1">Vikramaditya Roy</div>
+          <div class="cabin-service" id="tvServiceCabin1">Laser Carbon Peel & Acne Review</div>
+          <div>
+            <span class="cabin-state-pill state-calling">
+              <span class="pulse-dot pulse-dot-amber"></span> CALLING NOW 🔔
+            </span>
+          </div>
+        </div>
+
+        <!-- Cabin 2 -->
+        <div class="cabin-card ready" id="tvCabin2">
+          <div class="cabin-badge">CABIN 02 • ROOM 104</div>
+          <div class="cabin-doctor-name">Dr. Arvind Menon, BDS, MDS</div>
+          <div class="cabin-dept">Dental & Orthodontics</div>
+          <div style="font-size:10px; font-family:var(--font-mono); color:#94A3B8;">NOW SERVING TOKEN</div>
+          <div class="cabin-token-huge" id="tvTokenCabin2">B-04</div>
+          <div class="cabin-patient-name" id="tvPatientCabin2">Rahul Krishnan</div>
+          <div class="cabin-service" id="tvServiceCabin2">Root Canal Treatment (Stage 2)</div>
+          <div>
+            <span class="cabin-state-pill state-consulting">
+              <span class="pulse-dot"></span> IN CONSULTATION
+            </span>
+          </div>
+        </div>
+
+        <!-- Cabin 3 -->
+        <div class="cabin-card" id="tvCabin3">
+          <div class="cabin-badge">CABIN 03 • ROOM 108</div>
+          <div class="cabin-doctor-name">Dr. Shalini Ray, MBBS, DNB</div>
+          <div class="cabin-dept">General & Preventive Care</div>
+          <div style="font-size:10px; font-family:var(--font-mono); color:#94A3B8;">NOW SERVING TOKEN</div>
+          <div class="cabin-token-huge" id="tvTokenCabin3">C-08</div>
+          <div class="cabin-patient-name" id="tvPatientCabin3">Master Aarav Patel</div>
+          <div class="cabin-service" id="tvServiceCabin3">Seasonal Asthma & Nebulization</div>
+          <div>
+            <span class="cabin-state-pill state-consulting">
+              <span class="pulse-dot"></span> IN CONSULTATION
+            </span>
+          </div>
+        </div>
       </div>
 
-      <div style="margin-top:20px;">
-        <input type="text" id="patName" placeholder="Patient Full Name" style="width:100%; padding:10px; border:1px solid #CBD5E1; border-radius:6px; margin-bottom:10px; font-size:13px;">
-        <input type="tel" id="patPhone" placeholder="WhatsApp Mobile Number" style="width:100%; padding:10px; border:1px solid #CBD5E1; border-radius:6px; margin-bottom:14px; font-size:13px;">
-        <button style="width:100%; background:#0D9488; color:#FFF; border:none; padding:14px; font-weight:700; border-radius:6px; cursor:pointer;" onclick="bookToken()">GENERATE OPD QUEUE TOKEN</button>
+      <!-- Next in Queue Table & Doctor Status -->
+      <div class="tv-lower-grid">
+        <!-- Next 4+ in Queue -->
+        <div class="tv-panel">
+          <div class="tv-panel-title">
+            <span>UPCOMING TOKENS IN WAITING QUEUE</span>
+            <span style="color:#2DD4BF;">● AUTO-ADVANCE</span>
+          </div>
+          <table class="tv-queue-table">
+            <thead>
+              <tr>
+                <th>TOKEN</th>
+                <th>PATIENT</th>
+                <th>ROOM / DOCTOR</th>
+                <th>STATUS</th>
+                <th>EST. WAIT</th>
+              </tr>
+            </thead>
+            <tbody id="tvQueueRows">
+              <tr>
+                <td class="tv-token-cell">#A-15</td>
+                <td>Meera Venkatesh</td>
+                <td>Room 101 • Dr. Sarah Smith</td>
+                <td><span style="color:#FBBF24;">WAITING (Next)</span></td>
+                <td>~6 Min</td>
+              </tr>
+              <tr>
+                <td class="tv-token-cell">#B-05</td>
+                <td>Kavita Sundaram</td>
+                <td>Room 104 • Dr. Arvind Menon</td>
+                <td><span style="color:#94A3B8;">WAITING</span></td>
+                <td>~14 Min</td>
+              </tr>
+              <tr>
+                <td class="tv-token-cell">#A-16</td>
+                <td>Divya Nambiar</td>
+                <td>Room 101 • Dr. Sarah Smith</td>
+                <td><span style="color:#94A3B8;">WAITING</span></td>
+                <td>~22 Min</td>
+              </tr>
+              <tr>
+                <td class="tv-token-cell">#C-09</td>
+                <td>Rohan Desai</td>
+                <td>Room 108 • Dr. Shalini Ray</td>
+                <td><span style="color:#94A3B8;">WAITING</span></td>
+                <td>~28 Min</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Doctor Availability Status Cards -->
+        <div class="tv-panel">
+          <div class="tv-panel-title">
+            <span>DOCTOR CLINICAL STATUS</span>
+            <span style="color:#38BDF8;">3 PRACTITIONERS</span>
+          </div>
+          <div id="tvDocStatusList">
+            <div class="doc-status-card">
+              <div>
+                <div class="doc-status-name">Dr. Sarah Smith, MD</div>
+                <div class="doc-status-sub">Cabin 01 • Dermatology</div>
+              </div>
+              <div style="text-align:right;">
+                <span class="pulse-badge"><span class="pulse-dot"></span> <span style="font-size:11px; color:#34D399; font-weight:700;">ACTIVE</span></span>
+                <div style="font-size:10px; color:#94A3B8; font-family:var(--font-mono); margin-top:2px;">2 In Queue</div>
+              </div>
+            </div>
+
+            <div class="doc-status-card">
+              <div>
+                <div class="doc-status-name">Dr. Arvind Menon, BDS</div>
+                <div class="doc-status-sub">Cabin 02 • Dental Surgery</div>
+              </div>
+              <div style="text-align:right;">
+                <span class="pulse-badge"><span class="pulse-dot"></span> <span style="font-size:11px; color:#34D399; font-weight:700;">ACTIVE</span></span>
+                <div style="font-size:10px; color:#94A3B8; font-family:var(--font-mono); margin-top:2px;">1 In Queue</div>
+              </div>
+            </div>
+
+            <div class="doc-status-card">
+              <div>
+                <div class="doc-status-name">Dr. Shalini Ray, MBBS</div>
+                <div class="doc-status-sub">Cabin 03 • Pediatric OPD</div>
+              </div>
+              <div style="text-align:right;">
+                <span class="pulse-badge"><span class="pulse-dot"></span> <span style="font-size:11px; color:#34D399; font-weight:700;">ACTIVE</span></span>
+                <div style="font-size:10px; color:#94A3B8; font-family:var(--font-mono); margin-top:2px;">1 In Queue</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- TV Bottom Ticker -->
+      <div class="tv-ticker">
+        <span class="ticker-tag">NOTICE</span>
+        <div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+          Please proceed to your assigned cabin when your token number is chimed • Keep your WhatsApp digital token barcode ready at the nursing station • Emergency Care at Counter 01 • Wi-Fi: AURA-GUEST (Pass: health2026)
+        </div>
+      </div>
+
     </div>
 
-    <!-- Live Waiting-Room TV Screen -->
-    <div class="tv-display">
-      <div class="tv-header">
-        <span>WAITING ROOM LIVE OPD MONITOR</span>
-        <span style="color:#2DD4BF;">● LIVE REFRESH</span>
-      </div>
+  </main>
 
-      <div class="calling-box">
-        <div style="font-size:11px; color:#94A3B8;">CABIN 01 • DR. ROSHAN VARMA</div>
-        <div class="token-big" id="curToken">#TK-18</div>
-        <div style="color:#FFF; font-size:13px;">STATUS: IN CONSULTATION</div>
+  <!-- ========================================================
+       BOOKING CONFIRMATION MODAL & TOKEN PASS
+       ======================================================== -->
+  <div class="modal-backdrop" id="tokenModal">
+    <div class="token-modal">
+      <div class="modal-header">
+        <h3 style="font-size:20px; font-weight:700;">OPD Appointment Confirmed</h3>
+        <p style="font-size:12px; opacity:0.9; margin-top:2px;">Your queue token is registered in our live clinic system.</p>
       </div>
+      <div class="modal-body">
+        <div class="token-ticket-hero">
+          <div style="font-size:11px; font-family:var(--font-mono); color:#64748B; letter-spacing:1px;">LIVE QUEUE TOKEN NUMBER</div>
+          <div class="token-number-hero" id="modalTokenNo">A-17</div>
+          <div style="font-weight:700; font-size:15px; color:#0F172A;" id="modalPatientName">Divya Nambiar</div>
+          <div style="font-size:12px; color:#64748B; margin-top:2px;" id="modalDocRoom">Dr. Sarah Smith • Cabin 01 (Room 101)</div>
+          <div style="font-size:11px; color:#0D9488; font-family:var(--font-mono); margin-top:6px;" id="modalSlotWait">
+            Slot: 11:30 AM • Est. Wait: ~18 mins
+          </div>
 
-      <div style="font-size:12px; margin-bottom:8px; color:#94A3B8;">NEXT IN QUEUE:</div>
-      <div style="background:#1E293B; padding:12px; border-radius:6px; display:flex; justify-content:space-between; margin-bottom:6px;">
-        <span>#TK-19 (P. Sharma)</span><span style="color:#F59E0B;">WAITING (5m)</span>
-      </div>
-      <div style="background:#1E293B; padding:12px; border-radius:6px; display:flex; justify-content:space-between;">
-        <span>#TK-20 (M. George)</span><span style="color:#94A3B8;">WAITING (15m)</span>
+          <div class="qr-placeholder">
+            <svg class="qr-svg" viewBox="0 0 100 100" fill="#0D9488">
+              <!-- Geometric QR simulation -->
+              <rect x="5" y="5" width="25" height="25" fill="#0D9488"/>
+              <rect x="10" y="10" width="15" height="15" fill="#FFFFFF"/>
+              <rect x="13" y="13" width="9" height="9" fill="#0D9488"/>
+
+              <rect x="70" y="5" width="25" height="25" fill="#0D9488"/>
+              <rect x="75" y="10" width="15" height="15" fill="#FFFFFF"/>
+              <rect x="78" y="13" width="9" height="9" fill="#0D9488"/>
+
+              <rect x="5" y="70" width="25" height="25" fill="#0D9488"/>
+              <rect x="10" y="75" width="15" height="15" fill="#FFFFFF"/>
+              <rect x="13" y="78" width="9" height="9" fill="#0D9488"/>
+
+              <rect x="40" y="15" width="10" height="10"/>
+              <rect x="55" y="25" width="8" height="8"/>
+              <rect x="35" y="45" width="30" height="10"/>
+              <rect x="45" y="65" width="12" height="12"/>
+              <rect x="70" y="45" width="10" height="20"/>
+              <rect x="70" y="75" width="20" height="15"/>
+            </svg>
+            <div style="font-size:9px; font-family:var(--font-mono); color:#64748B; margin-top:2px;">SCAN AT COUNTER</div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <a href="#" id="modalWaBtn" target="_blank" class="btn-wa-share">
+            <span>💬 Send Token Details to WhatsApp</span>
+          </a>
+          <button class="btn-switch-tv" onclick="closeModalAndShowTv()">
+            <span>📺 View Live Progress on TV Board</span>
+          </button>
+          <button class="btn-modal-close" onclick="closeModal()">
+            Done & Book Another
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- WhatsApp Floating Contact Button -->
+  <a href="https://wa.me/919061902295?text=Hello%20Aura%20Health,%20I%20have%20an%20inquiry%20regarding%20OPD%20appointments." id="floatingWaBtn" target="_blank" style="position:fixed; bottom:24px; right:24px; background:#25D366; color:#FFF; width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 25px rgba(37,211,102,0.4); text-decoration:none; font-size:24px; z-index:90;">
+    💬
+  </a>
+
+  <!-- Application Logic & Live Audio Chime Engine -->
   <script>
-    function selectSlot(el) {
+    // State
+    const appState = {
+      selectedDoctorId: 'doc_01',
+      selectedDoctorName: 'Dr. Sarah Smith, MD',
+      selectedDept: 'Dermatology & Skin Clinic',
+      selectedRoom: 'Room 101',
+      tokenPrefix: 'A',
+      selectedService: 'Laser Carbon Facial Peel',
+      selectedDate: 'Today (Live Queue)',
+      selectedSlot: '10:30 AM',
+      selectedGender: 'Female',
+      audioEnabled: true
+    };
+
+    // Services Catalog by Doctor/Dept
+    const servicesByDept = {
+      'Dermatology & Skin Clinic': [
+        { name: 'Laser Carbon Facial Peel', duration: '45m', fee: '₹2,500' },
+        { name: 'Acne & Scar Protocol Consult', duration: '20m', fee: '₹800' },
+        { name: 'HydraFacial MD Deep Pore Infusion', duration: '60m', fee: '₹3,500' },
+        { name: 'Chemical Glow Peel (Glycolic/Lactic)', duration: '30m', fee: '₹1,800' }
+      ],
+      'Dental & Orthodontics': [
+        { name: 'Ultrasonic Scaling & Polishing', duration: '30m', fee: '₹1,200' },
+        { name: 'Root Canal Treatment (RCT Sitting)', duration: '45m', fee: '₹3,500' },
+        { name: 'Invisalign 3D Digital Scan', duration: '25m', fee: '₹900' },
+        { name: 'Teeth Whitening Laser Treatment', duration: '45m', fee: '₹4,500' }
+      ],
+      'General & Preventive Care': [
+        { name: 'Comprehensive OPD General Checkup', duration: '15m', fee: '₹500' },
+        { name: 'Pediatric Growth & Vaccine Assessment', duration: '20m', fee: '₹600' },
+        { name: 'Nebulization & Seasonal Asthma Care', duration: '25m', fee: '₹750' },
+        { name: 'Preventive Blood Panel & Vitals Review', duration: '20m', fee: '₹950' }
+      ]
+    };
+
+    // Initialize Services
+    function renderServices(dept) {
+      const grid = document.getElementById('servicePickerGrid');
+      const list = servicesByDept[dept] || servicesByDept['Dermatology & Skin Clinic'];
+      grid.innerHTML = '';
+
+      list.forEach((item, idx) => {
+        const chip = document.createElement('div');
+        chip.className = 'service-chip' + (idx === 0 ? ' selected' : '');
+        chip.onclick = () => selectService(item.name, chip);
+        chip.innerHTML = `
+          <div class="service-name">${item.name}</div>
+          <div class="service-detail">
+            <span>⏱️ ${item.duration}</span>
+            <span style="font-weight:700; color:#0D9488;">${item.fee}</span>
+          </div>
+        `;
+        grid.appendChild(chip);
+      });
+      appState.selectedService = list[0].name;
+    }
+
+    function selectDoctor(id, name, dept, room, prefix, element) {
+      document.querySelectorAll('.doctor-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+      appState.selectedDoctorId = id;
+      appState.selectedDoctorName = name;
+      appState.selectedDept = dept;
+      appState.selectedRoom = room;
+      appState.tokenPrefix = prefix;
+
+      document.getElementById('activeDeptLabel').textContent = dept.toUpperCase();
+      renderServices(dept);
+    }
+
+    function filterDept(dept, tabEl) {
+      document.querySelectorAll('.dept-tab').forEach(t => t.classList.remove('active'));
+      tabEl.classList.add('active');
+      document.getElementById('activeDeptLabel').textContent = dept.toUpperCase();
+
+      if (dept.includes('Dermatology')) {
+        const doc = document.querySelectorAll('.doctor-card')[0];
+        selectDoctor('doc_01', 'Dr. Sarah Smith, MD', 'Dermatology & Skin Clinic', 'Room 101', 'A', doc);
+      } else if (dept.includes('Dental')) {
+        const doc = document.querySelectorAll('.doctor-card')[1];
+        selectDoctor('doc_02', 'Dr. Arvind Menon, BDS, MDS', 'Dental & Orthodontics', 'Room 104', 'B', doc);
+      } else {
+        const doc = document.querySelectorAll('.doctor-card')[2];
+        selectDoctor('doc_03', 'Dr. Shalini Ray, MBBS, DNB', 'General & Preventive Care', 'Room 108', 'C', doc);
+      }
+    }
+
+    function selectService(name, chip) {
+      document.querySelectorAll('.service-chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      appState.selectedService = name;
+    }
+
+    function selectDate(date, pill) {
+      document.querySelectorAll('.date-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      appState.selectedDate = date;
+    }
+
+    function selectSlot(time, pill) {
       document.querySelectorAll('.slot-pill').forEach(p => p.classList.remove('active'));
-      el.classList.add('active');
+      pill.classList.add('active');
+      appState.selectedSlot = time;
     }
-    function switchDept(name) {
-      document.querySelectorAll('.dept-tab').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
+
+    function selectGender(val, btn) {
+      document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      appState.selectedGender = val;
     }
-    function bookToken() {
-      const name = document.getElementById('patName').value;
-      if (!name) { alert('Please enter patient name.'); return; }
-      alert('Confirmed! Appointment Token #TK-21 generated for ' + name + '. Direct WhatsApp confirmation dispatched.');
+
+    // View Switcher (Booking vs. TV Mode)
+    function switchView(mode) {
+      const bookingSec = document.getElementById('bookingSection');
+      const tvSec = document.getElementById('tvSection');
+      const btnBooking = document.getElementById('btnViewBooking');
+      const btnTv = document.getElementById('btnViewTv');
+
+      if (mode === 'tv') {
+        bookingSec.style.display = 'none';
+        tvSec.classList.add('active');
+        btnBooking.classList.remove('active');
+        btnTv.classList.add('active');
+      } else {
+        tvSec.classList.remove('active');
+        bookingSec.style.display = 'grid';
+        btnTv.classList.remove('active');
+        btnBooking.classList.add('active');
+      }
     }
+
+    // Check URL parameters for ?view=tv
+    function checkUrlView() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('view') === 'tv') {
+        switchView('tv');
+      }
+    }
+
+    // ========================================================
+    // WEB AUDIO API TOKEN CHIME ("Ding-Dong" + Speech Synthesis)
+    // ========================================================
+    let audioCtx = null;
+
+    function playWebAudioChime(announcementMessage) {
+      if (!appState.audioEnabled) return;
+
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        if (!audioCtx) audioCtx = new AudioContext();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const now = audioCtx.currentTime;
+
+        // Note 1: E5 (659.25 Hz)
+        const osc1 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(659.25, now);
+        gain1.gain.setValueAtTime(0.3, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.65);
+
+        // Note 2: C5 (523.25 Hz)
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(523.25, now + 0.45);
+        gain2.gain.setValueAtTime(0.35, now + 0.45);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        osc2.start(now + 0.45);
+        osc2.stop(now + 1.25);
+
+        // Optional Web Speech Synthesis Voice PA announcement
+        if (announcementMessage && 'speechSynthesis' in window) {
+          setTimeout(() => {
+            try {
+              window.speechSynthesis.cancel();
+              const utterance = new SpeechSynthesisUtterance(announcementMessage);
+              utterance.rate = 0.95;
+              utterance.pitch = 1.05;
+              window.speechSynthesis.speak(utterance);
+            } catch (speechErr) {
+              console.warn('Speech synthesis unavailable:', speechErr);
+            }
+          }, 1100);
+        }
+      } catch (e) {
+        console.error('Audio chime error:', e);
+      }
+    }
+
+    function toggleAudioMute() {
+      appState.audioEnabled = !appState.audioEnabled;
+      const icon = document.getElementById('audioMuteIcon');
+      const text = document.getElementById('audioMuteText');
+      if (appState.audioEnabled) {
+        icon.textContent = '🔊';
+        text.textContent = 'PA Sound: ON';
+      } else {
+        icon.textContent = '🔇';
+        text.textContent = 'PA Sound: MUTED';
+      }
+    }
+
+    // ========================================================
+    // BOOKING SUBMISSION & MODAL
+    // ========================================================
+    async function submitBooking() {
+      const name = document.getElementById('patientName').value.trim();
+      const phone = document.getElementById('patientPhone').value.trim();
+      const age = document.getElementById('patientAge').value.trim();
+      const notes = document.getElementById('patientNotes').value.trim();
+
+      if (!name) {
+        alert('Please enter patient full name.');
+        document.getElementById('patientName').focus();
+        return;
+      }
+      if (!phone) {
+        alert('Please enter patient mobile number for queue notifications.');
+        document.getElementById('patientPhone').focus();
+        return;
+      }
+
+      const payload = {
+        patient_name: name,
+        patient_phone: phone,
+        patient_age: age || 28,
+        patient_gender: appState.selectedGender,
+        practitioner_id: appState.selectedDoctorId,
+        service_name: appState.selectedService,
+        slot_date: appState.selectedDate,
+        slot_time: appState.selectedSlot,
+        notes: notes
+      };
+
+      try {
+        const response = await fetch('/api/appointments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const res = await response.json();
+
+        const tokenNo = res.token_no || `${appState.tokenPrefix}-${Math.floor(Math.random() * 40) + 16}`;
+        showTokenModal(tokenNo, name, phone, res.room_no || appState.selectedRoom);
+      } catch (err) {
+        // Fallback local token generation
+        const fallbackToken = `${appState.tokenPrefix}-${Math.floor(Math.random() * 40) + 16}`;
+        showTokenModal(fallbackToken, name, phone, appState.selectedRoom);
+      }
+    }
+
+    function showTokenModal(tokenNo, patientName, phone, roomNo) {
+      document.getElementById('modalTokenNo').textContent = tokenNo;
+      document.getElementById('modalPatientName').textContent = patientName;
+      document.getElementById('modalDocRoom').textContent = `${appState.selectedDoctorName} • ${roomNo}`;
+      document.getElementById('modalSlotWait').textContent = `Slot: ${appState.selectedSlot} • Est. Wait: ~18 mins`;
+
+      const cleanPhone = phone.replace(/[^0-9]/g, '');
+      const waMsg = encodeURIComponent(
+        `*APPOINTMENT CONFIRMATION // AURA HEALTH*\n` +
+        `Token: *#${tokenNo}*\n` +
+        `Patient: ${patientName}\n` +
+        `Doctor: ${appState.selectedDoctorName}\n` +
+        `Room: ${roomNo}\n` +
+        `Time Slot: ${appState.selectedSlot}\n` +
+        `Service: ${appState.selectedService}\n` +
+        `Please arrive 10 minutes prior to your time.`
+      );
+      document.getElementById('modalWaBtn').href = `https://wa.me/${cleanPhone || '919061902295'}?text=${waMsg}`;
+
+      document.getElementById('tokenModal').classList.add('open');
+
+      // Chime announcement
+      playWebAudioChime(`Appointment confirmed. Token ${tokenNo} generated for ${patientName}`);
+
+      // Add to mini queue list
+      const miniList = document.getElementById('miniQueueList');
+      const newRow = document.createElement('div');
+      newRow.className = 'mini-queue-row';
+      newRow.innerHTML = `<span><span class="mini-token-pill">#${tokenNo}</span> ${patientName}</span><span class="mini-wait-pill">~18 MIN</span>`;
+      miniList.prepend(newRow);
+    }
+
+    function closeModal() {
+      document.getElementById('tokenModal').classList.remove('open');
+      document.getElementById('patientName').value = '';
+      document.getElementById('patientNotes').value = '';
+    }
+
+    function closeModalAndShowTv() {
+      closeModal();
+      switchView('tv');
+    }
+
+    // ========================================================
+    // REAL-TIME CLOCK & QUEUE TELEMETRY SYNC
+    // ========================================================
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      document.getElementById('trustClock').textContent = timeStr;
+      const tvClk = document.getElementById('tvDigitalClock');
+      if (tvClk) tvClk.textContent = timeStr;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Fetch Live Queue from /api/queue periodically
+    async function syncQueue() {
+      try {
+        const res = await fetch('/api/queue');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.queue && data.queue.length > 0) {
+            // Update next in queue table
+            const tbody = document.getElementById('tvQueueRows');
+            if (tbody) {
+              tbody.innerHTML = data.queue.slice(0, 5).map((q, idx) => `
+                <tr>
+                  <td class="tv-token-cell">#${q.token_no}</td>
+                  <td>${q.patient_name}</td>
+                  <td>${q.room_no || 'Cabin'} • ${q.doctor_name || ''}</td>
+                  <td><span style="color:${idx === 0 ? '#FBBF24' : '#94A3B8'};">${idx === 0 ? 'WAITING (Next)' : 'WAITING'}</span></td>
+                  <td>~${q.est_wait_min || ((idx + 1) * 7)} Min</td>
+                </tr>
+              `).join('');
+            }
+          }
+        }
+      } catch (e) {
+        // Silent fallback
+      }
+    }
+    setInterval(syncQueue, 15000);
+
+    // Initial setup
+    renderServices('Dermatology & Skin Clinic');
+    checkUrlView();
   </script>
 </body>
 </html>

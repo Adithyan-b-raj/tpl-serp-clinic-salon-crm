@@ -40,6 +40,7 @@
     if (params.has('dark')) updated.dark = sanitizeHex(params.get('dark'));
     if (params.has('bg')) updated.bg = sanitizeHex(params.get('bg'));
     if (params.has('wa')) updated.wa = sanitizePhone(params.get('wa'));
+    if (params.has('phone')) updated.wa = sanitizePhone(params.get('phone'));
     if (params.has('logo')) updated.logo = params.get('logo').trim();
 
     try {
@@ -74,7 +75,7 @@
     while (el.firstChild) el.removeChild(el.firstChild);
     var parts = brandText.split(/\s+/);
     var mainPart = parts[0] || brandText;
-    var subPart = parts.length > 1 ? parts.slice(1).join(' ') : (fallbackSub || 'Boutique');
+    var subPart = parts.length > 1 ? parts.slice(1).join(' ') : (fallbackSub || 'Health');
     el.appendChild(document.createTextNode(mainPart + ' '));
     var span = document.createElement('span');
     span.textContent = subPart;
@@ -86,7 +87,7 @@
     applyCssVariables(cfg);
 
     if (cfg.brand || (cfg.logo && /^https?:\/\//i.test(cfg.logo))) {
-      document.querySelectorAll('.brand-logo').forEach(function (el) {
+      document.querySelectorAll('.brand-logo, .clinic-logo').forEach(function (el) {
         if (cfg.logo && /^https?:\/\//i.test(cfg.logo)) {
           while (el.firstChild) el.removeChild(el.firstChild);
           var img = document.createElement('img');
@@ -97,14 +98,14 @@
           img.style.display = 'block';
           el.appendChild(img);
         } else if (cfg.brand) {
-          renderSplitBrand(el, cfg.brand, 'Boutique');
+          renderSplitBrand(el, cfg.brand, 'Health');
         }
       });
     }
 
     if (cfg.brand) {
       var isAdmin = window.location.pathname.indexOf('admin') !== -1;
-      document.title = cfg.brand + (isAdmin ? ' — Command Center & POS' : ' — Official Boutique Store');
+      document.title = cfg.brand + (isAdmin ? ' — Receptionist & Rx Console' : ' — OPD Appointments & Token Queue');
 
       document.querySelectorAll('.sidebar-brand-title').forEach(function (el) {
         renderSplitBrand(el, cfg.brand, 'Hub');
@@ -125,17 +126,17 @@
       });
     }
 
-    if (cfg.wa || cfg.brand) {
+    if (cfg.wa || cfg.phone || cfg.brand) {
       var waBtn = document.getElementById('floatingWaBtn');
-      var activeBrand = cfg.brand || 'Kaka by Eliza';
-      var activeWa = cfg.wa;
+      var activeBrand = cfg.brand || 'Aura Health Clinics';
+      var activeWa = cfg.wa || cfg.phone;
       if (!activeWa && waBtn && waBtn.href) {
         var m = waBtn.href.match(/wa\.me\/([0-9]+)/);
         if (m) activeWa = m[1];
       }
       if (activeWa) {
         if (waBtn) {
-          waBtn.href = 'https://wa.me/' + activeWa + '?text=' + encodeURIComponent('Hello ' + activeBrand + ', I have an inquiry regarding your collection');
+          waBtn.href = 'https://wa.me/' + activeWa + '?text=' + encodeURIComponent('Hello ' + activeBrand + ', I have an inquiry regarding OPD appointments and queue tokens.');
         }
         var drawerWa = document.getElementById('drawerWaText');
         if (drawerWa) {
@@ -152,7 +153,7 @@
 
     // Propagate query params across internal links (index.html <-> admin.html)
     var qs = new URLSearchParams();
-    ['brand', 'tagline', 'primary', 'dark', 'bg', 'wa', 'logo'].forEach(function (k) {
+    ['brand', 'tagline', 'primary', 'dark', 'bg', 'wa', 'phone', 'logo'].forEach(function (k) {
       if (cfg[k]) qs.set(k, cfg[k]);
     });
     var qsStr = qs.toString();
